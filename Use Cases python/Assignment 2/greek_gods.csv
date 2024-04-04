@@ -1,8 +1,6 @@
-Name,Age,Domain,Gender
-Zeus,6000,Olympian,God
-Poseidon,5500,Sea,God
-Hades,5000,Underworld,God
-Ares,4000,War,God
-Hephaestus,3500,Fire & Metalworking,God
-Chronos,10000,Time,God
-Apollo,8200,"Music, Poetry, Light, Healing",God
+God,Domain,Symbol,Age
+Zeus,King of the Gods,Thunderbolt,10000
+Poseidon,God of the Sea,Trident,9000
+Hera,Queen of the Gods,Peacock,8500
+Athena,Goddess of Wisdom,Owl,8000
+Hades,God of the Underworld,Helmet,9500
