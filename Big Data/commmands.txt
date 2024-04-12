@@ -1,0 +1,80 @@
+nupampandey@anupampandey-VirtualBox:~$ export HADOOP_CLASSPATH=$(hadoop classpath)
+anupampandey@anupampandey-VirtualBox:~$ echo $HADOOP_CLASSPATH
+anupampandey@anupampandey-VirtualBox:~$ hadoop-3.3.6/bin/hdfs namenode -format
+anupampandey@anupampandey-VirtualBox:~$ start-all.sh
+anupampandey@anupampandey-VirtualBox:~$ hadoop fs -mkdir /wordcount
+anupampandey@anupampandey-VirtualBox:~$ hadoop fs -mkdir /wordcount/input
+anupampandey@anupampandey-VirtualBox:~$ hadoop fs -put '/home/anupampandey/Public/input/data.txt' /wordcount/input
+anupampandey@anupampandey-VirtualBox:~$ hadoop fs -cat /wordcount/input/data.txt
+the quick brown fox jumps over the lazy dog.
+How much wood would a woodchuck chuck if a woodchuck could chuck wood?
+Peter piper picked a peck of pickled peppers.
+She sells seashells by a sea shore.
+I scream, you scream, we all scream ice cream.
+To be or not to be, that is the question.
+All's well that ends well.
+anupampandey@anupampandey-VirtualBox:~$ cd /home/anupampandey/Public
+anupampandey@anupampandey-VirtualBox:~/Public$ javac -classpath ${HADOOP_CLASSPATH} -d '/home/anupampandey/Public/java_classes' '/home/anupampandey/Public/WordCount.java' 
+anupampandey@anupampandey-VirtualBox:~/Public$ jar -cvf wordcount.jar -C java_classes/ .
+added manifest
+adding: WordCount$TokenizerMapper.class(in = 1736) (out= 754)(deflated 56%)
+adding: WordCount.class(in = 1491) (out= 814)(deflated 45%)
+adding: WordCount$IntSumReducer.class(in = 1739) (out= 739)(deflated 57%)
+anupampandey@anupampandey-VirtualBox:~/Public$ hadoop jar '/home/anupampandey/Public/wordcount.jar' WordCount /wordcount/input /wordcount/output
+anupampandey@anupampandey-VirtualBox:~/Public$ hadoop dfs -cat /wordcount/output/*
+WARNING: Use of this script to execute dfs is deprecated.
+WARNING: Attempting to execute replacement "hdfs dfs" instead.
+
+All's	1
+How	1
+I	1
+Peter	1
+She	1
+To	1
+a	4
+all	1
+be	1
+be,	1
+brown	1
+by	1
+chuck	2
+could	1
+cream.	1
+dog.	1
+ends	1
+fox	1
+ice	1
+if	1
+is	1
+jumps	1
+lazy	1
+much	1
+not	1
+of	1
+or	1
+over	1
+peck	1
+peppers.	1
+picked	1
+pickled	1
+piper	1
+question.	1
+quick	1
+scream	1
+scream,	2
+sea	1
+seashells	1
+sells	1
+shore.	1
+that	2
+the	3
+to	1
+we	1
+well	1
+well.	1
+wood	1
+wood?	1
+woodchuck	2
+would	1
+you	1
+
