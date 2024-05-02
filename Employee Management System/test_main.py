@@ -31,7 +31,7 @@ def test_enter_employee_details():
 
 
 def test_update_name():
-    response = client.put("/EMP005", params={"name": "ricky"})
+    response = client.put("/EMP006", params={"name": "ricky"})
     assert response.status_code == 200
     print(response.json())
 
