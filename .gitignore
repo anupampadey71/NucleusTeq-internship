@@ -1,8 +1,27 @@
-# Ignore Conda environment files
-employee management system/.env/
-employee management system/__pycache__/
-*.pyc
+# Ignore conda environment directories
+.env/
+conda-env/
 
-# Ignore Conda environment configuration files
-employee management system/.yaml
-employee management system/.yml
+# Ignore Python bytecode files
+*.pyc
+__pycache__/
+
+# Ignore database files
+*.sqlite3
+
+# Ignore logs and cache files
+*.log
+.cache/
+
+# Ignore editor/IDE specific files
+.vscode/
+.idea/
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+__pycache__/
+
+# Ignore system and temporary files
+.DS_Store
+Thumbs.db
