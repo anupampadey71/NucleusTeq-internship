@@ -4,6 +4,6 @@ class Register(BaseModel):
     employeeId : str
     email : str
     name : str 
-    salary : str
+    salary : int
     role : str
     
