@@ -1,8 +1,0 @@
-# Ignore Conda environment files
-.env/
-__pycache__/
-*.pyc
-
-# Ignore Conda environment configuration files
-*.yaml
-*.yml

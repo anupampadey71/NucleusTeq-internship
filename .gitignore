@@ -1,0 +1,8 @@
+# Ignore Conda environment files
+employee management system/.env/
+employee management system/__pycache__/
+*.pyc
+
+# Ignore Conda environment configuration files
+employee management system/.yaml
+employee management system/.yml
