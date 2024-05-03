@@ -1,2 +1,2 @@
 uvicorn main:app --reload
-pytest test_main.py
+pytest test_employee.py
