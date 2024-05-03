@@ -1,4 +1,6 @@
 ### Python ###
+# Python virtual environment
+venv/
 
 # Environments
 .env

@@ -4,6 +4,9 @@ from route.employee_route import employee_router
 from route.department_route import department_router
 from route.skillset_route import skillset_router
 from route.manager_route import manager_router
+from route.employeeskill_route import employeeskill_router
+from route.project_route import project_router
+from route.request_route import request_router
 app = FastAPI()
 
 @app.get("/")
@@ -14,3 +17,6 @@ app.include_router(employee_router, prefix="/employees", tags=["Employees"])
 app.include_router(department_router, prefix="/departments", tags=["Departments"])
 app.include_router(skillset_router, prefix="/skillsets", tags=["Skillsets"])
 app.include_router(manager_router, prefix="/manager", tags=["manager"])
+app.include_router(employeeskill_router, prefix="/employeeskill", tags=["employeeskill"])
+app.include_router(project_router, prefix="/project", tags=["project"])
+app.include_router(request_router, prefix="/request", tags=["request"])
