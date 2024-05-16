@@ -7,20 +7,29 @@ from main import app  # Importing from the parent folder
 
 client = TestClient(app)
 
+# Function to get authentication token
+def get_token(username, password):
+    response = client.post("/auth/login", data={"username": username, "password": password})
+    return response.json()["token"]
+
 def test_main():
     response = client.get("/")
     assert response.status_code == 200
     print(response.json())
+
 def test_enter_department_details():
     # Define the data for the department details
     data = {
           "departmentId": "DEPT003",
           "name": "Deployment",
-          "managerId": "MGR001"
+          "managerId": "MGR002"
     }
 
-    # Make a POST request to the endpoint with the provided data
-    response = client.post("/departments/", json=data)
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Make a POST request to the endpoint with the provided data and token
+    response = client.post("/departments/", json=data, params={"username": "admin_user", "password": "admin_password"})
     
     # Assert that the response status code is 200
     assert response.status_code == 200
@@ -28,30 +37,30 @@ def test_enter_department_details():
     # Assert that the response JSON matches the expected message
     assert response.json() == {"message": "Record added successfully"}
 
-    # Additional checks to verify the record in the database
-    # (if applicable, based on the application's design and setup)
-
-
-
 def test_update_department_name():
     # Define department ID and updated name
-    department_id = "DEPT001"
-    updated_name = "Development Department"
+    department_id = "DEPT003"
+    updated_name = "Testing Department"
 
-    # Make a PUT request to update the department's name
-    response = client.put(f"/departments/{department_id}", params={"name": updated_name})
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Make a PUT request to update the department's name with token
+    response = client.put(f"/departments/{department_id}", params={"name": updated_name, "username": "admin_user", "password": "admin_password"})
 
     # Assert that the response status code is 200
     assert response.status_code == 200
     print(response.json())
 
-
 def test_delete_department():
     # Define department ID to be deleted
     department_id = "DEPT003"
 
-    # Make a DELETE request to delete the department record
-    response = client.delete(f"/departments/", params={"departmentId": department_id})
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Make a DELETE request to delete the department record with token
+    response = client.delete("/departments/", params={"departmentId": department_id, "username": "admin_user", "password": "admin_password"})
 
     # Assert that the response status code is 200
     assert response.status_code == 200

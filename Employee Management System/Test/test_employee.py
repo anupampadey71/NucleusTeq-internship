@@ -7,53 +7,71 @@ from main import app  # Importing from the parent folder
 
 client = TestClient(app)
 
+# Function to get authentication token
+def get_token(username, password):
+    response = client.post("/auth/login", data={"username": username, "password": password})
+    return response.json()["token"]
+
 def test_main():
     response = client.get("/")
     assert response.status_code == 200
     print(response.json())
+
 def test_enter_employee_details():
     # Define the data for the employee details
     data = {
         "employeeId": "EMP009",
-        "email": "nehal.pandey@company.com",
-        "name": "nehal pandey",
+        "email": "Aehal.pandey@company.com",
+        "name": "Aehal pandey",
         "salary": 110000,
         "role": "Software Engineer"
     }
 
-    # Make a POST request to the endpoint with the provided data
-    response = client.post("/employees/", json=data)
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Make a POST request to the endpoint with the provided data and token
+    response = client.post(f"/employees/?username=admin_user&password=admin_password", json=data)
     
     # Assert that the response status code is 200
     assert response.status_code == 200
-    
-    # Assert that the response JSON matches the expected message
     assert response.json() == {"message": "Record added successfully"}
 
-    # Additional checks to verify the record in the database
-    # (if applicable, based on the application's design and setup)
+def test_get_my_info():
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
 
-
-
-def test_update_employee_name():
-    # Define employee ID and updated name
-    employee_id = "EMP007"
-    updated_name = "Anupam Sharma"
-
-    # Make a PUT request to update the employee's name
-    response = client.put(f"/employees/{employee_id}", params={"name": updated_name})
+    # Make a GET request to get employee info with token
+    response = client.get("/employees/my_info?username=admin_user&password=admin_password")
 
     # Assert that the response status code is 200
     assert response.status_code == 200
     print(response.json())
 
+def test_update_employee_name():
+    # Define employee ID and updated name
+    employee_id = "EMP009"
+    updated_name = "Anupam Sharma"
+
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Make a PUT request to update the employee's name with token
+    response = client.put(f"/employees/{employee_id}?name={updated_name}&username=admin_user&password=admin_password")
+
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+    print(response.json())
 
 def test_delete_employee():
     # Define employee ID to be deleted
-    employee_id = "EMP007"
+    employee_id = "EMP009"
 
-    # Make a DELETE request to delete the employee record
-    response = client.delete(f"/employees/", params={"employeeId": employee_id})
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Make a DELETE request to delete the employee record with token
+    response = client.delete(f"/employees/?employeeId={employee_id}&username=admin_user&password=admin_password")
 
     # Assert that the response status code is 200
     assert response.status_code == 200

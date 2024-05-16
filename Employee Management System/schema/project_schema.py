@@ -4,7 +4,8 @@ def individual_serial(todo) -> dict:
     dictionary = {
         "projectId" : todo[0],
         "name" : todo[1],
-        "description" : todo[2]
+        "description" : todo[2],
+        "managerId" : todo[3]
     }
     return dictionary
 
