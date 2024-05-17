@@ -3,22 +3,34 @@ import os
 from fastapi.testclient import TestClient
 from main import app  # Importing from the parent folder
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Add parent directory to Python path
+# Add parent directory to Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 client = TestClient(app)
+
+# Function to get authentication token
+def get_token(username, password):
+    response = client.post("/auth/login", data={"username": username, "password": password})
+    return response.json()["token"]
 
 def test_create_request():
     """Tests creating a new request"""
     # Define data for the request
     data = {
-        "requestId": "REQ001",
-        "projectId": "PROJ002",
-        "skillId": "SKILL003",
+        "requestId": "REQ006",
+        "projectId": "PROJ001",
+        "skillId": "SKILL004",
         "status": "Open"
     }
 
+    # Authenticate to get the token
+    token = get_token("MGR001", "MGR001")
+
     # Send POST request to create request
-    response = client.post("/request/", json=data)
+    response = client.post("/request/", 
+                           params={"username": "MGR001", "password": "MGR001"},
+                           json=data,
+                           headers={"Authorization": f"Bearer {token}", "accept": "application/json", "Content-Type": "application/json"})
 
     # Assert successful creation
     assert response.status_code == 200
@@ -27,21 +39,28 @@ def test_create_request():
 
 def test_get_all_requests():
     """Tests retrieving all requests"""
-    # Send GET request to retrieve all requests
-    response = client.get("/request/all_requests")
+    # Authenticate to get the token
+    token = get_token("MGR001", "MGR001")
 
-    # Assert successful retrieval (content will depend on your data)
+    # Send GET request to retrieve all requests
+    response = client.get("/request/all_requests", 
+                          params={"username": "MGR001", "password": "MGR001"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    # Assert successful retrieval
     assert response.status_code == 200
+    assert "requests" in response.json()
 
 
 def test_update_request():
     """Tests updating a request"""
-    # Define request ID and updated status
-    request_id = "REQ001"
-    updated_status = "Closed"
+    # Authenticate to get the token
+    token = get_token("MGR001", "MGR001")
 
     # Send PUT request to update request
-    response = client.put(f"/request/{request_id}", params={"status": updated_status})
+    response = client.put("/request/REQ006", 
+                          params={"status": "Closed", "username": "MGR001", "password": "MGR001"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
     # Assert successful update
     assert response.status_code == 200
@@ -50,11 +69,13 @@ def test_update_request():
 
 def test_delete_request():
     """Tests deleting a request"""
-    # Define request ID to delete
-    request_id = "REQ002"  # Assuming REQ001 was created in test_create_request
+    # Authenticate to get the token
+    token = get_token("MGR001", "MGR001")
 
     # Send DELETE request to delete the request
-    response = client.delete(f"/request/{request_id}")
+    response = client.delete("/request/REQ006", 
+                             params={"username": "MGR001", "password": "MGR001"},
+                             headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
     # Assert successful deletion
     assert response.status_code == 200

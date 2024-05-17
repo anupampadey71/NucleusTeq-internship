@@ -6,7 +6,7 @@ def individual_assignment_serial(assignment) -> dict:
         "requestId": assignment[1],
         "employeeId": assignment[2],
         "projectId": assignment[3],
-        "status": assignment[4]
+        "assigned": assignment[4]
     }
     return dictionary
 

@@ -5,4 +5,10 @@ class Register(BaseModel):
     requestId: str
     employeeId: str
     projectId: str
-    status: str
+    assigned: bool
+
+class create_assignment(BaseModel):
+    assignmentId: str
+    requestId: str
+    employeeId: str
+    projectId: str

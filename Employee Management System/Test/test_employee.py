@@ -1,9 +1,9 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Add parent directory to Python path
-
 from fastapi.testclient import TestClient
-from main import app  # Importing from the parent folder
+from main import app
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  # Add parent directory to Python path
 
 client = TestClient(app)
 
@@ -20,10 +20,10 @@ def test_main():
 def test_enter_employee_details():
     # Define the data for the employee details
     data = {
-        "employeeId": "EMP009",
-        "email": "Aehal.pandey@company.com",
-        "name": "Aehal pandey",
-        "salary": 110000,
+        "employeeId": "EMP006",
+        "email": "rashmi.pandey@company.com",
+        "name": "rashmi pandey",
+        "salary": 100000,
         "role": "Software Engineer"
     }
 
@@ -48,24 +48,30 @@ def test_get_my_info():
     assert response.status_code == 200
     print(response.json())
 
-def test_update_employee_name():
-    # Define employee ID and updated name
-    employee_id = "EMP009"
-    updated_name = "Anupam Sharma"
+def test_update_employee_details():
+    # Define employee ID and updated details
+    employee_id = "EMP006"
+    updated_details = {
+        "email": "rashmi.tiwari@company.com",
+        "name": "rashmi Tiwari",
+        "salary": 200000,
+        "role": "Senior Software Engineer",
+        "is_assigned": True
+    }
 
     # Authenticate to get the token
     token = get_token("admin_user", "admin_password")
 
-    # Make a PUT request to update the employee's name with token
-    response = client.put(f"/employees/{employee_id}?name={updated_name}&username=admin_user&password=admin_password")
+    # Make a PUT request to update the employee details with token
+    response = client.put(f"/employees/{employee_id}?username=admin_user&password=admin_password", json=updated_details)
 
     # Assert that the response status code is 200
     assert response.status_code == 200
-    print(response.json())
+    assert response.json() == {"message": "Record updated successfully"}
 
 def test_delete_employee():
     # Define employee ID to be deleted
-    employee_id = "EMP009"
+    employee_id = "EMP006"
 
     # Authenticate to get the token
     token = get_token("admin_user", "admin_password")
