@@ -4,3 +4,4 @@ class Register(BaseModel):
     projectId : str
     name : str
     description : str
+    managerId : str

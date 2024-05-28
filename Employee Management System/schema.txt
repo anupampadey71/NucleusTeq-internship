@@ -53,3 +53,16 @@ CREATE TABLE Request (
   skillId VARCHAR(10) FOREIGN KEY REFERENCES SkillSet(skillId),
   status VARCHAR(20) NOT NULL
 );
+
+-- Create Assignment table
+CREATE TABLE Assignment (
+  assignmentId SERIAL PRIMARY KEY,
+  requestId VARCHAR(10) NOT NULL,
+  employeeId VARCHAR(10),
+  projectId VARCHAR(10),
+  status VARCHAR(20) NOT NULL,
+  FOREIGN KEY (requestId) REFERENCES Request(requestId),
+  FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
+  FOREIGN KEY (projectId) REFERENCES Project(projectId)
+);
+

@@ -1,13 +1,25 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
 from model.request_models import Register
 from schema.request_schema import list_serial
+from .auth_route import authenticate_user, Role
 
 request_router = APIRouter()
 
+def get_manager_id(project_id: str):
+    """Get managerId associated with the project_id."""
+    sql_query = "SELECT managerId FROM project WHERE projectId = %s;"
+    cursor.execute(sql_query, (project_id,))
+    manager = cursor.fetchone()
+    return manager[0] if manager else None
+
 @request_router.post("/")
-async def create_request(request: Register):
+async def create_request(request: Register, current_user: dict = Depends(authenticate_user)):
     """Create a new request."""
+    # Only managers can create requests for their projects
+    if current_user["role"] != Role.manager or get_manager_id(request.projectId) != current_user["username"]:
+        raise HTTPException(status_code=403, detail="Only managers can create requests for their projects")
+
     sql_query = "INSERT INTO request VALUES (%s, %s, %s, %s);"
     try:
         cursor.execute(sql_query, (request.requestId, request.projectId, request.skillId, request.status))
@@ -18,21 +30,46 @@ async def create_request(request: Register):
         return {"message": "Request added successfully"}
 
 @request_router.get("/all_requests")
-async def get_all_requests():
+async def get_all_requests(current_user: dict = Depends(authenticate_user)):
     """Retrieve all requests."""
-    sql_query = "SELECT * FROM request;"
-    try:
-        cursor.execute(sql_query)
-        values = cursor.fetchall()
-        result = list_serial(values)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    if current_user["role"] == Role.manager:
+        # Managers can access requests associated with their projects or their own requests
+        manager_id = current_user["username"]
+        sql_query = "SELECT projectId FROM project WHERE managerId = %s;"
+        cursor.execute(sql_query, (manager_id,))
+        project_ids = cursor.fetchall()
+        if project_ids:
+            project_ids = [project[0] for project in project_ids]
+            project_ids_str = ", ".join(["%s" for _ in project_ids])
+            sql_query = f"SELECT * FROM request WHERE projectId IN ({project_ids_str});"
+            cursor.execute(sql_query, project_ids)
+        else:
+            # If no projects found for the manager, return empty list
+            return {"requests": []}
     else:
-        return result
+        # Regular users and admins don't have access
+        raise HTTPException(status_code=403, detail="You don't have permission to access this resource")
+
+    # Fetch all requests
+    requests = cursor.fetchall()
+    return {"requests": requests}
 
 @request_router.put("/{requestId}")
-async def update_request(requestId: str, status: str):
+async def update_request(requestId: str, status: str, current_user: dict = Depends(authenticate_user)):
     """Update the status of a request."""
+    # Retrieve projectId from the database using the requestId
+    sql_query = "SELECT projectId FROM request WHERE requestId = %s;"
+    cursor.execute(sql_query, (requestId,))
+    result = cursor.fetchone()
+    if not result:
+        raise HTTPException(status_code=404, detail="Request not found")
+    projectId = result[0]
+
+    # Only managers can update requests for their projects
+    if current_user["role"] != Role.manager or get_manager_id(projectId) != current_user["username"]:
+        raise HTTPException(status_code=403, detail="Only managers can update requests for their projects")
+
+    # Update request status in the database
     sql_query = "UPDATE request SET status = %s WHERE requestId = %s;"
     try:
         cursor.execute(sql_query, (status, requestId))
@@ -43,8 +80,21 @@ async def update_request(requestId: str, status: str):
         return {"message": "Request status updated successfully"}
 
 @request_router.delete("/{requestId}")
-async def delete_request(requestId: str):
+async def delete_request(requestId: str, current_user: dict = Depends(authenticate_user)):
     """Delete a request."""
+    # Retrieve projectId from the database using the requestId
+    sql_query = "SELECT projectId FROM request WHERE requestId = %s;"
+    cursor.execute(sql_query, (requestId,))
+    result = cursor.fetchone()
+    if not result:
+        raise HTTPException(status_code=404, detail="Request not found")
+    projectId = result[0]
+
+    # Only managers can delete requests for their projects
+    if current_user["role"] != Role.manager or get_manager_id(projectId) != current_user["username"]:
+        raise HTTPException(status_code=403, detail="Only managers can delete requests for their projects")
+
+    # Delete the request from the database
     sql_query = "DELETE FROM request WHERE requestId = %s;"
     try:
         cursor.execute(sql_query, (requestId,))
