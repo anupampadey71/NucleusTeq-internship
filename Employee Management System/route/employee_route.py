@@ -3,8 +3,9 @@ from config.databases import sql, cursor
 from model.employee_models import Register, UpdateEmployeeDetails
 from schema.employee_schema import list_serial
 from .auth_route import authenticate_user, Role
+import hashlib
 
-employee_router = APIRouter()
+employee_router = APIRouter()                                                      
 
 @employee_router.post("/")
 async def enter_employee_details(info: Register, current_user: dict = Depends(authenticate_user)):
@@ -12,14 +13,34 @@ async def enter_employee_details(info: Register, current_user: dict = Depends(au
     if current_user["role"] != Role.admin:
         raise HTTPException(status_code=403, detail="Only admin can add new employees")
 
-    sql_query = "INSERT INTO employee (employeeId, email, name, salary, role) VALUES (%s, %s, %s, %s, %s);"
+    employee_sql_query = "INSERT INTO employee (employeeId, email, name, salary, role) VALUES (%s, %s, %s, %s, %s);"
+    user_sql_query = "INSERT INTO users (username, password_hash, role) VALUES (%s, %s, %s);"
+
+    # Determine role based on employeeId prefix
+    if info.employeeId.startswith("EMP"):
+        user_role = "user"
+    elif info.employeeId.startswith("MGR"):
+        user_role = "manager"
+    else:
+        raise HTTPException(status_code=400, detail="Invalid employeeId prefix")
+
+    # Hash the employeeId to use as the password
+    hashed_password = hashlib.sha256(info.employeeId.encode()).hexdigest()
+
     try:
-        cursor.execute(sql_query, (info.employeeId, info.email, info.name, info.salary, info.role))
+        # Insert into employee table
+        cursor.execute(employee_sql_query, (info.employeeId, info.email, info.name, info.salary, info.role))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error inserting into employee table: {str(e)}")
+    
+    try:
+        # Insert into users table
+        cursor.execute(user_sql_query, (info.employeeId, hashed_password, user_role))
         sql.commit()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    else:
-        return {"message": "Record added successfully"}
+        raise HTTPException(status_code=500, detail=f"Error inserting into users table: {str(e)}")
+    
+    return {"message": "Record added successfully"}
 
 @employee_router.get("/my_info")
 async def my_info(current_user: dict = Depends(authenticate_user)):
