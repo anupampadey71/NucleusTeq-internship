@@ -6,60 +6,83 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
+// Centralized error handling
+const handleError = (error) => {
+  console.error('API call failed. ', error.response ? error.response.data : error.message);
+  throw error;
+};
+
 export const login = (username, password) => {
-  return api.post('/auth/login', new URLSearchParams({ username, password }));
+  return api.post('/auth/login', new URLSearchParams({ username, password }))
+    .catch(handleError);
 };
 
 export const getDepartments = (user) => {
-  return api.get(`/departments/my_info?username=${user.username}&password=${user.password}`, {
+  return api.get(`/departments/my_info`, {
     headers: { Authorization: `Bearer ${user.token}` },
-  });
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
-export const addDepartment = (departmentId, name, managerId,user) => {
-  return api.post(`/departments?username=${user.username}&password=${user.password}`, {
-    "departmentId": departmentId,
-    "name": name,
-    "managerId": managerId
+export const addDepartment = (departmentId, name, managerId, user) => {
+  return api.post(`/departments`, {
+    departmentId,
+    name,
+    managerId,
   }, {
     headers: { Authorization: `Bearer ${user.token}` },
-  });
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
 export const updateDepartment = (departmentId, name, user) => {
-  return api.put(`/departments/${departmentId}?username=${user.username}&password=${user.password}&name=${name}`, {
+  console.log('Updating department:', departmentId, name);
+  return api.put(`/departments/${departmentId}`, null, {
     headers: { Authorization: `Bearer ${user.token}` },
-  });
+    params: { name, username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
 export const deleteDepartment = (departmentId, user) => {
-  return api.delete(`/departments?departmentId=${departmentId}&username=${user.username}&password=${user.password}`, {
+  return api.delete('/departments', {
     headers: { Authorization: `Bearer ${user.token}` },
-  });
+    params: { departmentId, username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
 // Similarly, create methods for employees
-export const getEmployees = (token) => {
+export const getEmployees = (user) => {
   return api.get('/employees/my_info', {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
-export const addEmployee = (employee, token) => {
+export const addEmployee = (employee, user) => {
   return api.post('/employees', employee, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
-export const updateEmployee = (employeeId, employee, token) => {
+export const updateEmployee = (employeeId, employee, user) => {
   return api.put(`/employees/${employeeId}`, employee, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
 
-export const deleteEmployee = (employeeId, token) => {
+export const deleteEmployee = (employeeId, user) => {
   return api.delete('/employees', {
-    params: { employeeId },
-    headers: { Authorization: `Bearer ${token}` },
-  });
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { employeeId, username: user.username, password: user.password },
+  })
+  .catch(handleError);
 };
