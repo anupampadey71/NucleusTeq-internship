@@ -6,13 +6,7 @@ from .auth_route import authenticate_user, Role
 
 assignment_router = APIRouter()
 
-from fastapi import APIRouter, HTTPException, Depends
-from config.databases import sql, cursor
-from model.assignment_models import Register
-from schema.assignment_schema import list_serial
-from .auth_route import authenticate_user, Role
 
-assignment_router = APIRouter()
 
 def is_employee_available(employee_id: str, skill_id: str, project_id: str) -> bool:
     """Check if the employee has the required skill for the project."""

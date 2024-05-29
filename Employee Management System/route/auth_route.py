@@ -28,7 +28,7 @@ async def authenticate_user(username: str, password: str):
         # Verify the password by comparing the hashed password from the database
         # with the hashed password provided by the user
         if hashed_password == stored_password_hash:
-            return {"username": username, "role": user[3]}  # Assuming role is in the fourth column
+            return {"username": username, "role": user[3], "password": password}  # Assuming role is in the fourth column
     
     return None
 
@@ -37,6 +37,6 @@ async def authenticate_user(username: str, password: str):
 async def login(username: str = Form(...), password: str = Form(...)):
     user = await authenticate_user(username, password)
     if user:
-        return {"token": "some_access_token"}  # You should implement proper token generation logic here
+        return {"token": "some_access_token", "username": user["username"], "role": user["role"], "password": user["password"]}  # You should implement proper token generation logic here
     else:
         raise HTTPException(status_code=401, detail="Invalid username or password")
