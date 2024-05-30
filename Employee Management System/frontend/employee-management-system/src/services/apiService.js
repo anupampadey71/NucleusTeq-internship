@@ -126,15 +126,86 @@ export const getSkills = (user) => {
 export const updateSkill = (skillId, skillName, user) => {
   return api.put(`/skillsets/${skillId}`, null, {
     headers: { Authorization: `Bearer ${user.token}` },
-    params: { skillName, username: user.username, password: user.password },
+    params: { name: skillName, username: user.username, password: user.password },
   })
   .catch(handleError);
 };
 
 export const deleteSkill = (skillId, user) => {
-  return api.delete('/skillsets', {
+  return api.delete(`/skillsets/${skillId}`, {
     headers: { Authorization: `Bearer ${user.token}` },
-    params: { skillId, username: user.username, password: user.password },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+
+export const addManager = (managerId, employeeId, user) => {
+  return api.post(`/manager/`, {
+    managerId,
+    employeeId,
+  }, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const getManagers = (user) => {
+  return api.get(`/manager/`, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const getManagerEmployees = (managerId, user) => {
+  return api.get(`/manager/${managerId}/employees/`, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const updateManager = (managerId, oldEmployeeId, newEmployeeId, user) => {
+  return api.put(`/manager/${managerId}`, null, {
+    params: { old_employeeId: oldEmployeeId, new_employeeId: newEmployeeId, username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const deleteManager = (managerId, employeeId, user) => {
+  return api.delete(`/manager/${managerId}`, {
+    params: { employeeId: employeeId, username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+//EmployeeSkill
+export const addEmployeeSkill = (employeeId, skillId, user) => {
+  return api.post(`/employeeskill/`, {
+    employeeId,
+    skillId,
+  }, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const updateEmployeeSkill = (employeeId, currentSkillId, newSkillId, user) => {
+  return api.put(`/employeeskill/`, null, {
+    params: { employee_id: employeeId, current_skill_id: currentSkillId, new_skill_id: newSkillId, username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const getEmployeeSkills = (employeeId, user) => {
+  return api.get(`/employeeskill/${employeeId}`, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+export const deleteEmployeeSkill = (employeeId, skillId, user) => {
+  return api.delete(`/employeeskill/${employeeId}/${skillId}`, {
+    params: { username: user.username, password: user.password },
   })
   .catch(handleError);
 };
