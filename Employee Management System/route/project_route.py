@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
-from model.project_models import Register
+from model.project_models import Register, UpdateProject
 from schema.project_schema import list_serial
 from .auth_route import authenticate_user, Role
 
@@ -40,7 +40,7 @@ async def get_all_projects(current_user: dict = Depends(authenticate_user)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @project_router.put("/{projectId}")
-async def update_project(projectId: str, project: Register, current_user: dict = Depends(authenticate_user)):
+async def update_project(projectId: str, project: UpdateProject, current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin
     if current_user["role"] not in [Role.admin, Role.manager]:
         raise HTTPException(status_code=403, detail="Only admin or manager can update projects")

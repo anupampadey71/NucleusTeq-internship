@@ -9,6 +9,9 @@ import AdminEmployee from './components/AdminDashboard/AdminEmployee';
 import AdminSkillset from './components/AdminDashboard/AdminSkillsets';
 import AdminManager from './components/AdminDashboard/AdminManager';
 import AdminEmployeeSkill from './components/AdminDashboard/AdminEmployeeSkill';
+import AdminProject from './components/AdminDashboard/AdminProject';
+import AdminRequest from './components/AdminDashboard/AdminRequest';
+import AdminAssignment from './components/AdminDashboard/AdminAssignment';
 // import ProtectedRoute from './ProtectedRoute';
 const ProtectedRoute = ({ element: Component, role, ...rest }) => {
   const { user } = useAuth();
@@ -44,6 +47,9 @@ const App = () => {
             <Route path="/admin/skillsets" element={<AdminSkillset />} />
             <Route path="/admin/managers" element={<AdminManager />} />
             <Route path="/admin/employeeskills" element={<AdminEmployeeSkill />} />
+            <Route path="/admin/projects" element={<AdminProject />} />
+            <Route path="/admin/requests" element={<AdminRequest />} />
+            <Route path="/admin/assignments" element={<AdminAssignment />} />
           </Route>
           {/* <Route path="/admin" element={<AdminDashboard/>  } /> */}
           {/* <Route path="/admin/departments" element={<ProtectedRoute element={<AdminDepartment/>} role="admin" />} /> */}

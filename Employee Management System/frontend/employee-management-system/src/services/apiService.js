@@ -203,8 +203,84 @@ export const getEmployeeSkills = (employeeId, user) => {
   .catch(handleError);
 };
 
+
+// Function to add a project
+export const addProject = (projectData, user) => {
+  return api.post(`/project/`, projectData, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Function to update a project
+export const updateProject = (projectId, projectData, user) => {
+  return api.put(`/project/${projectId}`, projectData, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+
+// Function to get all projects
+export const getAllProjects = (user) => {
+  return api.get(`/project/all_projects`, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Function to delete a project
+export const deleteProject = (projectId, user) => {
+  return api.delete(`/project/${projectId}`, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+
 export const deleteEmployeeSkill = (employeeId, skillId, user) => {
   return api.delete(`/employeeskill/${employeeId}/${skillId}`, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+//request
+export const getAllRequests = (user) => {
+  return api.get('/request/all_requests', {
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Function to add an assignment
+export const addAssignment = (assignmentData, user) => {
+  return api.post(`/assignment/`, assignmentData, {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Function to get all assignments
+export const getAllAssignments = (user) => {
+  return api.get('/assignment/all_assignments', {
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Function to update an assignment
+export const updateAssignment = (assignmentId, assigned, user) => {
+  return api.put(`/assignment/${assignmentId}`, null, {
+    params: { assigned, username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Function to delete an assignment
+export const deleteAssignment = (assignmentId, user) => {
+  return api.delete(`/assignment/${assignmentId}`, {
     params: { username: user.username, password: user.password },
   })
   .catch(handleError);

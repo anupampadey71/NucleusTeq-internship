@@ -46,13 +46,18 @@ async def get_all_requests(current_user: dict = Depends(authenticate_user)):
         else:
             # If no projects found for the manager, return empty list
             return {"requests": []}
+    elif current_user["role"] == Role.admin:  # Add condition for admin role
+        # Admins can access all requests
+        sql_query = "SELECT * FROM request;"
+        cursor.execute(sql_query)
     else:
-        # Regular users and admins don't have access
+        # Regular users and other roles don't have access
         raise HTTPException(status_code=403, detail="You don't have permission to access this resource")
 
     # Fetch all requests
     requests = cursor.fetchall()
     return {"requests": requests}
+
 
 @request_router.put("/{requestId}")
 async def update_request(requestId: str, status: str, current_user: dict = Depends(authenticate_user)):

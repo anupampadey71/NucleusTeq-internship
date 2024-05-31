@@ -6,8 +6,6 @@ from .auth_route import authenticate_user, Role
 
 assignment_router = APIRouter()
 
-
-
 def is_employee_available(employee_id: str, skill_id: str, project_id: str) -> bool:
     """Check if the employee has the required skill for the project."""
     sql_query = "SELECT COUNT(*) FROM employeeskill WHERE employeeId = %s AND skillId = %s;"
@@ -38,7 +36,10 @@ async def create_assignment(assignment: create_assignment, current_user: dict = 
     employee_skills = cursor.fetchall()
     cursor.execute("SELECT skillId FROM request WHERE requestId = %s", (assignment.requestId,))
     required_skill = cursor.fetchone()
-    if required_skill not in employee_skills:
+    
+    # Extract the required skill ID
+    required_skill_id = required_skill[0] if required_skill else None
+    if required_skill_id not in [skill[0] for skill in employee_skills]:
         raise HTTPException(status_code=400, detail="Employee does not have the required skill")
 
     # Insert the assignment
@@ -49,6 +50,7 @@ async def create_assignment(assignment: create_assignment, current_user: dict = 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     return {"message": "Assignment added successfully"}
+
 
 @assignment_router.get("/all_assignments")
 async def get_all_assignments(current_user: dict = Depends(authenticate_user)):
@@ -90,7 +92,6 @@ async def update_assignment(assignmentId: str, assigned: bool, current_user: dic
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     return {"message": "Assignment status updated successfully"}
-
 
 @assignment_router.delete("/{assignmentId}")
 async def delete_assignment(assignmentId: str, current_user: dict = Depends(authenticate_user)):

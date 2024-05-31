@@ -30,6 +30,16 @@ const AdminDashboard = () => {
         <Link to="/admin/employeeskills" style={{ margin: '0 10px', textDecoration: 'none' }}>
           EmployeeSkills
         </Link>
+        <Link to="/admin/projects" style={{ margin: '0 10px', textDecoration: 'none' }}>
+          Projects
+        </Link>
+        <Link to="/admin/requests" style={{ margin: '0 10px', textDecoration: 'none' }}>
+          Requests
+        </Link>
+        <Link to="/admin/assignments" style={{ margin: '0 10px', textDecoration: 'none' }}>
+          Requests
+        </Link>
+        
         
         
       </nav>
