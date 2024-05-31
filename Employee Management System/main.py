@@ -10,11 +10,32 @@ from route.assignment_route import assignment_router
 from route.auth_route import auth_router  # Import the auth router
 from config.databases import sql, cursor
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
 
 @app.get("/")
 async def main():
     return {"msg" : "Hey Everyone"}
+
+
+
+# Configure CORS
+origins = [
+    "http://localhost:3000",  # Adjust this to your frontend's origin
+    # Add other allowed origins here
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
+
+
 
 # Define endpoints for other routes
 app.include_router(auth_router, prefix="/auth", tags=["Authentication"])  # Include the auth router
@@ -26,3 +47,4 @@ app.include_router(employeeskill_router, prefix="/employeeskill", tags=["employe
 app.include_router(project_router, prefix="/project", tags=["project"])
 app.include_router(request_router, prefix="/request", tags=["request"])
 app.include_router(assignment_router, prefix="/assignment", tags=["assignment"])
+

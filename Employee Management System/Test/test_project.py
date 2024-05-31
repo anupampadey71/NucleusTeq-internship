@@ -49,38 +49,35 @@ def test_get_all_projects():
     assert response.status_code == 200
 
 def test_update_project():
-    # Define project ID, updated name, and updated description
+    # Define project ID and updated details
     project_id = "PROJ005"
-    updated_name = "Fornite"
-    updated_description = "Mobile battle royal game"
-
-    # Authenticate as admin to get the token
-    token = get_token("admin_user", "admin_password")
-
-    # Construct the request URL with query parameters for authentication
-    url = "http://127.0.0.1:8000/project/PROJ005"
-    params = {"username": "admin_user", "password": "admin_password"}
-
-    # Construct the request body
-    data = {
-        "projectId": project_id,
-        "name": updated_name,
-        "description": updated_description,
+    updated_details = {
+        "name": "Habit Tracker",
+        "description": "To Track your daily habits",
         "managerId": "MGR001"
     }
 
-    # Send PUT request to update project
-    response = requests.put(
+    # Authenticate to get the token
+    token = get_token("admin_user", "admin_password")
+
+    # Construct the request URL with query parameters
+    url = f"/project/{project_id}?username=admin_user&password=admin_password"
+
+    # Make a PUT request to update the project details with the token
+    response = client.put(
         url,
-        params=params,
-        json=data,
+        json=updated_details,
         headers={"Authorization": f"Bearer {token}", "accept": "application/json", "Content-Type": "application/json"}
     )
 
-    # Assert successful update
+    # Print response details for debugging
+    print(f"Status Code: {response.status_code}")
+    print(f"Response Body: {response.json()}")
+
+    # Assert that the response status code is 200
     assert response.status_code == 200
     assert response.json() == {"message": "Project updated successfully"}
-
+    
 def test_delete_project():
     """Tests deleting a project"""
     # Define project ID to delete

@@ -42,6 +42,7 @@ async def enter_employee_details(info: Register, current_user: dict = Depends(au
     
     return {"message": "Record added successfully"}
 
+
 @employee_router.get("/my_info")
 async def my_info(current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin, manager, or user
@@ -83,11 +84,17 @@ async def delete_record(employeeId: str = Query(..., description="Employee ID"),
     if current_user["role"] != Role.admin:
         raise HTTPException(status_code=403, detail="Only admin can delete employee records")
 
-    sql_query = "DELETE FROM employee WHERE employeeId = %s;"
+    delete_employee_sql_query = "DELETE FROM employee WHERE employeeId = %s;"
+    delete_user_sql_query = "DELETE FROM users WHERE username = %s;"
+
     try:
-        cursor.execute(sql_query, (employeeId,))
+        # Delete from employee table
+        cursor.execute(delete_employee_sql_query, (employeeId,))
+        # Delete from users table
+        cursor.execute(delete_user_sql_query, (employeeId,))
         sql.commit()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     else:
         return {"message": "Record deleted successfully"}
+

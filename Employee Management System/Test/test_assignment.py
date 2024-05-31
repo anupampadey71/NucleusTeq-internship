@@ -11,10 +11,10 @@ def test_create_assignment():
     """Test creating a new assignment"""
     # Define data for the assignment
     data = {
-        "assignmentId": "ASSG004",
-        "requestId": "REQ006",
+        "assignmentId": "ASSG003",
+        "requestId": "REQ004",
         "employeeId": "EMP004",
-        "projectId": "PROJ002"
+        "projectId": "PROJ004"
     }
 
     # Send POST request to create assignment
@@ -38,7 +38,7 @@ def test_get_all_assignments():
 def test_update_assignment():
     """Test updating an assignment"""
     # Define assignment ID and updated status
-    assignment_id = "ASSG004"
+    assignment_id = "ASSG003"
     updated_status = True
 
     # Send PUT request to update assignment
@@ -52,7 +52,7 @@ def test_update_assignment():
 def test_delete_assignment():
     """Test deleting an assignment"""
     # Define assignment ID to delete
-    assignment_id = "ASSG004"
+    assignment_id = "ASSG003"
 
     # Send DELETE request to delete the assignment
     response = client.delete(f"/assignment/{assignment_id}", params={"username": "admin_user", "password": "admin_password"})

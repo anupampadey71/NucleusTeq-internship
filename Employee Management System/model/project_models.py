@@ -5,3 +5,8 @@ class Register(BaseModel):
     name : str
     description : str
     managerId : str
+
+class UpdateProject(BaseModel):
+    name : str
+    description : str
+    managerId : str
