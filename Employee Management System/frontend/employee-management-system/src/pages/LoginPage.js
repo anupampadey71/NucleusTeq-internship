@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/apiService';
 import { useAuth } from '../context/AuthContext';
 
@@ -15,7 +15,15 @@ const LoginPage = () => {
       const response = await login(username, password);
       loginUser(response.data);
       console.log(response.data);
-      navigate('/admin'); // Redirect to admin dashboard, adjust as necessary
+      if(response.data.role === 'admin') {
+      navigate('/admin');
+      } 
+      else if(response.data.role === 'manager'){
+        navigate('/manager');
+      }
+      else if(response.data.role === 'user'){
+        navigate('/user');
+      }
     } catch (error) {
       console.error('Login failed', error);
     }
@@ -42,6 +50,7 @@ const LoginPage = () => {
           />
         </div>
         <button type="submit">Login</button>
+        
       </form>
     </div>
   );

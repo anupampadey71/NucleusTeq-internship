@@ -30,8 +30,8 @@ async def add_manager(info: Register, current_user: dict = Depends(authenticate_
 async def get_managers(current_user: dict = Depends(authenticate_user)):
     """Get all managers"""
     # Check if the user is admin or manager
-    if current_user["role"] not in [Role.admin, Role.manager]:
-        raise HTTPException(status_code=403, detail="Only admin or manager can retrieve managers")
+    if current_user["role"] not in [Role.admin, Role.manager,Role.user]:
+        raise HTTPException(status_code=403, detail="Only admin or manager or user can retrieve managers")
 
     sql_query = "SELECT * FROM manager;"
     try:
@@ -46,7 +46,7 @@ async def get_managers(current_user: dict = Depends(authenticate_user)):
 async def get_employee(managerId: str, current_user: dict = Depends(authenticate_user)):
     """Get employees corresponding to a manager"""
     # Check if the user is admin or manager
-    if current_user["role"] not in [Role.admin, Role.manager]:
+    if current_user["role"] not in [Role.admin, Role.manager,Role.user]:
         raise HTTPException(status_code=403, detail="Only admin or manager can view employees")
 
     # If user is manager, make sure they are retrieving employees for their own manager record

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addManager, deleteManager, getManagers, updateManager, getManagerEmployees } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
 
-const AdminManager = () => {
+const ManagerManager = () => {
   const { user } = useAuth();
   const [managers, setManagers] = useState([]);
   const [managerId, setManagerId] = useState('');
@@ -78,7 +78,7 @@ const AdminManager = () => {
 
   return (
     <div>
-      <h2>Managers</h2>
+      <h2>Manager </h2>
       <div>
         <h3>Managers Table</h3>
         <table>
@@ -100,7 +100,7 @@ const AdminManager = () => {
       </div>
 
       <div>
-        <h3>Get Employees under Manager </h3>
+        <h3>Get Employees under Manager</h3>
         <input type="text" placeholder="Manager ID" value={managerId} onChange={(e) => setManagerId(e.target.value)} />
         <button onClick={handleGetManagerEmployees}>Get Employees</button>
         {managerEmployees.length > 0 && (
@@ -140,4 +140,4 @@ const AdminManager = () => {
   );
 };
 
-export default AdminManager;
+export default ManagerManager;

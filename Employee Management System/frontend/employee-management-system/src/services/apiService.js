@@ -246,8 +246,36 @@ export const deleteEmployeeSkill = (employeeId, skillId, user) => {
 };
 
 //request
+// Add request
+export const addRequest = (requestData, user) => {
+  return api.post('/request/', requestData, {
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// get request
 export const getAllRequests = (user) => {
   return api.get('/request/all_requests', {
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Update request
+export const updateRequest = (requestId, status, user) => {
+  return api.put(`/request/${requestId}`, null, {
+    headers: { Authorization: `Bearer ${user.token}` },
+    params: { status, username: user.username, password: user.password },
+  })
+  .catch(handleError);
+};
+
+// Delete request
+export const deleteRequest = (requestId, user) => {
+  return api.delete(`/request/${requestId}`, {
     headers: { Authorization: `Bearer ${user.token}` },
     params: { username: user.username, password: user.password },
   })

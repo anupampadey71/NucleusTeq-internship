@@ -37,7 +37,7 @@ const AdminDashboard = () => {
           Requests
         </Link>
         <Link to="/admin/assignments" style={{ margin: '0 10px', textDecoration: 'none' }}>
-          Requests
+          Assignment
         </Link>
         
         

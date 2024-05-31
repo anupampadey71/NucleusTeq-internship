@@ -28,8 +28,8 @@ async def create_project(project: Register, current_user: dict = Depends(authent
 @project_router.get("/all_projects")
 async def get_all_projects(current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin or manager
-    if current_user["role"] not in [Role.admin, Role.manager]:
-        raise HTTPException(status_code=403, detail="Only admin or manager can retrieve all projects")
+    if current_user["role"] not in [Role.admin, Role.manager,Role.user]:
+        raise HTTPException(status_code=403, detail="Only admin or manager or user can retrieve all projects")
 
     sql_query = "SELECT * FROM project;"
     try:

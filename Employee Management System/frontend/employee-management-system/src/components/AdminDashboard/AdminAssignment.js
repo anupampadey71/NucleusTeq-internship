@@ -74,9 +74,9 @@ const AdminAssignment = () => {
 
   return (
     <div>
-      <h2>Assignment Operations</h2>
+      <h2>Assignment </h2>
       <div>
-        <h3>Get All Assignments</h3>
+        <h3>Assignments Table</h3>
         <table>
           <thead>
             <tr>

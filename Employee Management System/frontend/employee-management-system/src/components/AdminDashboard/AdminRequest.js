@@ -22,7 +22,7 @@ const AdminRequest = () => {
 
   return (
     <div>
-      <h2>All Requests</h2>
+      <h2>Requests By Managers</h2>
       <table>
         <thead>
           <tr>

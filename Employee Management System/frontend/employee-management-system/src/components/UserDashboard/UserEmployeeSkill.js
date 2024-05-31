@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { addEmployeeSkill, deleteEmployeeSkill, getEmployeeSkills, updateEmployeeSkill } from '../../services/apiService'; // Adjusted import path
+import { addEmployeeSkill, deleteEmployeeSkill, getEmployeeSkills, updateEmployeeSkill } from '../../services/apiService';
 import { useAuth } from '../../context/AuthContext';
 
-const AdminEmployeeSkill = () => {
+const UserEmployeeSkill = () => {
   const { user } = useAuth();
   const [employeeSkills, setEmployeeSkills] = useState([]);
   const [employeeId, setEmployeeId] = useState('');
-  const [skillId, setSkillId] = useState('');
   const [currentSkillId, setCurrentSkillId] = useState('');
   const [newSkillId, setNewSkillId] = useState('');
   const [employeeIdToAdd, setEmployeeIdToAdd] = useState('');
@@ -16,7 +15,7 @@ const AdminEmployeeSkill = () => {
   const [skillIdToDelete, setSkillIdToDelete] = useState('');
   const [refetch, setRefetch] = useState(false);
 
-  const fetchEmployeeSkills = async (employeeId) => {
+  const fetchEmployeeSkills = async () => {
     try {
       const res = await getEmployeeSkills(employeeId, user);
       setEmployeeSkills(res.data.skills);
@@ -44,6 +43,9 @@ const AdminEmployeeSkill = () => {
       const res = await updateEmployeeSkill(employeeIdToUpdate, currentSkillId, newSkillId, user);
       console.log(res); // Handle success response
       setRefetch(!refetch);
+      setEmployeeIdToUpdate('');
+      setCurrentSkillId('');
+      setNewSkillId('');
     } catch (error) {
       console.error('Failed to update employee skill:', error.response ? error.response.data : error.message);
       alert('Failed to update employee skill. Please try again.');
@@ -55,6 +57,8 @@ const AdminEmployeeSkill = () => {
       const res = await deleteEmployeeSkill(employeeIdToDelete, skillIdToDelete, user);
       console.log(res); // Handle success response
       setRefetch(!refetch);
+      setEmployeeIdToDelete('');
+      setSkillIdToDelete('');
     } catch (error) {
       console.error('Failed to delete employee skill:', error.response ? error.response.data : error.message);
       alert('Failed to delete employee skill. Please try again.');
@@ -62,23 +66,23 @@ const AdminEmployeeSkill = () => {
   };
 
   useEffect(() => {
-    if (employeeId) {
-      fetchEmployeeSkills(employeeId);
+    if (refetch) {
+      fetchEmployeeSkills();
     }
-  }, [employeeId, refetch]);
+  }, [refetch]);
 
   return (
     <div>
-      <h2>Employee Skill Management</h2>
+      <h2>Employee Skills</h2>
       <div>
-        <h3>Get Employee Skills</h3>
+        <h3>Employee Skills by Employee ID</h3>
         <input 
           type="text" 
           placeholder="Employee ID" 
           value={employeeId} 
           onChange={(e) => setEmployeeId(e.target.value)} 
         />
-        {/* <button onClick={() => fetchEmployeeSkills(employeeId)}>Get Skills</button> */}
+        <button onClick={fetchEmployeeSkills}>Get Skills</button>
         {employeeSkills.length > 0 && (
           <div>
             <h4>Skills for Employee ID: {employeeId}</h4>
@@ -91,7 +95,7 @@ const AdminEmployeeSkill = () => {
         )}
       </div>
       <div>
-        <h3>Add Employee Skill</h3>
+        <h3>Add Employee Skills</h3>
         <input 
           type="text" 
           placeholder="Employee ID" 
@@ -107,7 +111,7 @@ const AdminEmployeeSkill = () => {
         <button onClick={handleAddEmployeeSkill}>Add Skill</button>
       </div>
       <div>
-        <h3>Update Employee Skill</h3>
+        <h3>Update Employee Skills</h3>
         <input 
           type="text" 
           placeholder="Employee ID" 
@@ -129,7 +133,7 @@ const AdminEmployeeSkill = () => {
         <button onClick={handleUpdateEmployeeSkill}>Update Skill</button>
       </div>
       <div>
-        <h3>Delete Employee Skill</h3>
+        <h3>Delete Employee Skills</h3>
         <input 
           type="text" 
           placeholder="Employee ID" 
@@ -148,4 +152,4 @@ const AdminEmployeeSkill = () => {
   );
 };
 
-export default AdminEmployeeSkill;
+export default UserEmployeeSkill;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addProject, deleteProject, getAllProjects, updateProject } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
 
-const AdminProject = () => {
+const ManagerProject = () => {
   const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [projectId, setProjectId] = useState('');
@@ -176,4 +176,4 @@ const AdminProject = () => {
   );
 };
 
-export default AdminProject;
+export default ManagerProject;
