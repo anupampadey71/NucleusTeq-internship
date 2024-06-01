@@ -61,6 +61,7 @@ async def enter_employee_details(info: Register, current_user: dict = Depends(au
     
     return {"message": "Record added successfully"}
 
+
 @employee_router.get("/my_info")
 async def my_info(current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin, manager, or user
