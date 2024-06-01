@@ -164,6 +164,14 @@ export const getManagerEmployees = (managerId, user) => {
   .catch(handleError);
 };
 
+export const getUserManager = (username, password) => {
+  return api.get('/manager/user/manager/', {
+    params: { username, password },
+  })
+  .then(response => response.data)
+  .catch(handleError);
+};
+
 export const updateManager = (managerId, oldEmployeeId, newEmployeeId, user) => {
   return api.put(`/manager/${managerId}`, null, {
     params: { old_employeeId: oldEmployeeId, new_employeeId: newEmployeeId, username: user.username, password: user.password },
@@ -282,6 +290,7 @@ export const deleteRequest = (requestId, user) => {
   .catch(handleError);
 };
 
+
 // Function to add an assignment
 export const addAssignment = (assignmentData, user) => {
   return api.post(`/assignment/`, assignmentData, {
@@ -312,4 +321,18 @@ export const deleteAssignment = (assignmentId, user) => {
     params: { username: user.username, password: user.password },
   })
   .catch(handleError);
+};
+
+
+export const changePassword = async (username, oldPassword, newPassword) => {
+  const params = new URLSearchParams();
+  params.append('username', username);
+  params.append('old_password', oldPassword);
+  params.append('new_password', newPassword);
+
+  return await api.put('/auth/change-password', params, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }).catch(handleError);
 };

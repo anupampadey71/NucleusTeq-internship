@@ -1,75 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { getManagers, getManagerEmployees } from '../../services/apiService'; // Adjusted import path
+import { getUserManager } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
 
 const UserManager = () => {
   const { user } = useAuth();
-  const [managers, setManagers] = useState([]);
-  const [managerEmployees, setManagerEmployees] = useState([]);
   const [managerId, setManagerId] = useState('');
   const [refetch, setRefetch] = useState(false);
+  const [loggedInUserManagerId, setLoggedInUserManagerId] = useState('');
 
-  const fetchManagers = async () => {
+  const fetchLoggedInUserManagerId = async () => {
     try {
-      const res = await getManagers(user);
-      setManagers(res.data);
+      const res = await getUserManager(user.username, user.password);
+      setLoggedInUserManagerId(res.managerId);
     } catch (error) {
-      console.error('Failed to get managers:', error.response ? error.response.data : error.message);
-      alert('Failed to get managers. Please try again.');
-    }
-  };
-
-  const handleGetManagerEmployees = async () => {
-    try {
-      const res = await getManagerEmployees(managerId, user);
-      setManagerEmployees(res.data.employees);
-    } catch (error) {
-      console.error('Failed to get manager employees:', error.response ? error.response.data : error.message);
-      alert('Failed to get manager employees. Please try again.');
+      console.error('Failed to get user manager:', error.response ? error.response.data : error.message);
+      alert('Failed to get user manager. Please try again.');
     }
   };
 
   useEffect(() => {
-    fetchManagers();
+    fetchLoggedInUserManagerId();
   }, [refetch]);
 
   return (
     <div>
-      <h2>Manager Operations</h2>
-      <div>
-        <h3>Get Managers</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Manager ID</th>
-              <th>Employee ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            {managers.map((manager, index) => (
-              <tr key={index}>
-                <td>{manager.ManagerId}</td>
-                <td>{manager.employeeId}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <h2>Your Manager </h2>
 
       <div>
-        <h3>Get Employees by Manager ID</h3>
-        <input type="text" placeholder="Manager ID" value={managerId} onChange={(e) => setManagerId(e.target.value)} />
-        <button onClick={handleGetManagerEmployees}>Get Employees</button>
-        {managerEmployees.length > 0 && (
-          <div>
-            <h4>Employees under Manager ID: {managerId}</h4>
-            <ul>
-              {managerEmployees.map((employee, index) => (
-                <li key={index}>{employee}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/* <h3>Logged-In User Manager ID</h3> */}
+        <p>{loggedInUserManagerId}</p>
       </div>
     </div>
   );
