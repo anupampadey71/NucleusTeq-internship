@@ -29,6 +29,9 @@ import UserProject from './components/UserDashboard/UserProject';
 import ManagerRequest from './components/ManagerDashboard/MangerRequest';
 import ManagerAssignment from './components/ManagerDashboard/ManagerAssignment';
 import UserAssignment from './components/UserDashboard/UserAssignment';
+import ChangePassword from './pages/ChangePassword';
+
+
 
 
 
@@ -86,8 +89,9 @@ const App = () => {
             <Route path="/user/employeeskills" element={<UserEmployeeSkill />} />
             <Route path="/user/projects" element={<UserProject />} />
             <Route path="/user/assignments" element={<UserAssignment />} /> 
-
           </Route>
+
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/" element={<Navigate to="/login" />} />
         </Routes>
       </Router>

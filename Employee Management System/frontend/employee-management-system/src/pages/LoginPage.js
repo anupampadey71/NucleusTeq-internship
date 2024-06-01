@@ -50,7 +50,9 @@ const LoginPage = () => {
           />
         </div>
         <button type="submit">Login</button>
-        
+        <Link to="/change-password" style={{ margin: '0 10px', textDecoration: 'none' }}>
+          changePassword
+        </Link>
       </form>
     </div>
   );

@@ -1,3 +1,5 @@
+import logging
+import os
 from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
 from model.assignment_models import Register, create_assignment
@@ -6,29 +8,37 @@ from .auth_route import authenticate_user, Role
 
 assignment_router = APIRouter()
 
-def is_employee_available(employee_id: str, skill_id: str, project_id: str) -> bool:
-    """Check if the employee has the required skill for the project."""
-    sql_query = "SELECT COUNT(*) FROM employeeskill WHERE employeeId = %s AND skillId = %s;"
-    cursor.execute(sql_query, (employee_id, skill_id))
-    result = cursor.fetchone()
-    return result[0] > 0
+# Ensure the log directory exists
+log_dir = "log"
+os.makedirs(log_dir, exist_ok=True)
+
+# Configure logging for assignment_route
+assignment_logger = logging.getLogger("assignment")
+assignment_file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_dir, 'assignment.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
+assignment_file_handler.setLevel(logging.INFO)
+assignment_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+assignment_file_handler.setFormatter(assignment_formatter)
+assignment_logger.addHandler(assignment_file_handler)
 
 @assignment_router.post("/")
 async def create_assignment(assignment: create_assignment, current_user: dict = Depends(authenticate_user)):
     """Create a new assignment."""
     if current_user["role"] != Role.admin:
+        assignment_logger.warning("Unauthorized attempt to create assignment by user %s", current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin can create assignments")
 
     # Check if request status is 'Open'
     cursor.execute("SELECT status FROM request WHERE requestId = %s", (assignment.requestId,))
     request_status = cursor.fetchone()
     if not request_status or request_status[0] != 'Open':
+        assignment_logger.warning("Request %s is not open", assignment.requestId)
         raise HTTPException(status_code=400, detail="Request is not open")
 
     # Check if the employee is available
     cursor.execute("SELECT is_assigned FROM employee WHERE employeeId = %s", (assignment.employeeId,))
     employee_status = cursor.fetchone()
     if not employee_status or employee_status[0] != 0:
+        assignment_logger.warning("Employee %s is not available", assignment.employeeId)
         raise HTTPException(status_code=400, detail="Employee is not available")
 
     # Check if the employee has the required skill
@@ -40,6 +50,7 @@ async def create_assignment(assignment: create_assignment, current_user: dict = 
     # Extract the required skill ID
     required_skill_id = required_skill[0] if required_skill else None
     if required_skill_id not in [skill[0] for skill in employee_skills]:
+        assignment_logger.warning("Employee %s does not have the required skill %s", assignment.employeeId, required_skill_id)
         raise HTTPException(status_code=400, detail="Employee does not have the required skill")
 
     # Insert the assignment
@@ -47,10 +58,11 @@ async def create_assignment(assignment: create_assignment, current_user: dict = 
         cursor.execute("INSERT INTO assignment (assignmentId, requestId, employeeId, projectId, assigned) VALUES (%s, %s, %s, %s, %s)", 
                        (assignment.assignmentId, assignment.requestId, assignment.employeeId, assignment.projectId, False))
         sql.commit()
+        assignment_logger.info("Assignment %s created successfully by user %s", assignment.assignmentId, current_user["username"])
     except Exception as e:
+        assignment_logger.error("Error creating assignment %s: %s", assignment.assignmentId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
     return {"message": "Assignment added successfully"}
-
 
 @assignment_router.get("/all_assignments")
 async def get_all_assignments(current_user: dict = Depends(authenticate_user)):
@@ -70,12 +82,15 @@ async def get_all_assignments(current_user: dict = Depends(authenticate_user)):
         """
         cursor.execute(sql_query, (current_user["username"],))
     else:
+        assignment_logger.warning("Unauthorized attempt to view assignments by user %s", current_user["username"])
         raise HTTPException(status_code=403, detail="You do not have permission to view assignments")
 
     try:
         values = cursor.fetchall()
         result = list_serial(values)
+        assignment_logger.info("Assignments retrieved successfully by user %s", current_user["username"])
     except Exception as e:
+        assignment_logger.error("Error retrieving assignments: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
     return result
 
@@ -83,13 +98,16 @@ async def get_all_assignments(current_user: dict = Depends(authenticate_user)):
 async def update_assignment(assignmentId: str, assigned: bool, current_user: dict = Depends(authenticate_user)):
     """Update the assignment status."""
     if current_user["role"] != Role.admin:
+        assignment_logger.warning("Unauthorized attempt to update assignment %s by user %s", assignmentId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin can update assignment status")
 
     try:
         cursor.execute("UPDATE assignment SET assigned = %s WHERE assignmentId = %s;", (assigned, assignmentId))
         cursor.execute("UPDATE employee SET is_assigned = %s WHERE employeeId = (SELECT employeeId FROM assignment WHERE assignmentId = %s);", (assigned, assignmentId))
         sql.commit()
+        assignment_logger.info("Assignment %s updated successfully by user %s", assignmentId, current_user["username"])
     except Exception as e:
+        assignment_logger.error("Error updating assignment %s: %s", assignmentId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
     return {"message": "Assignment status updated successfully"}
 
@@ -97,6 +115,7 @@ async def update_assignment(assignmentId: str, assigned: bool, current_user: dic
 async def delete_assignment(assignmentId: str, current_user: dict = Depends(authenticate_user)):
     """Delete an assignment."""
     if current_user["role"] != Role.admin:
+        assignment_logger.warning("Unauthorized attempt to delete assignment %s by user %s", assignmentId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin can delete assignments")
 
     try:
@@ -108,6 +127,8 @@ async def delete_assignment(assignmentId: str, current_user: dict = Depends(auth
         if employee_id:
             cursor.execute("UPDATE employee SET is_assigned = 0 WHERE employeeId = %s;", (employee_id[0],))
         sql.commit()
+        assignment_logger.info("Assignment %s deleted successfully by user %s", assignmentId, current_user["username"])
     except Exception as e:
+        assignment_logger.error("Error deleting assignment %s: %s", assignmentId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
     return {"message": "Assignment deleted successfully"}

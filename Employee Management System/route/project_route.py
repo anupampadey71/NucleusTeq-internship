@@ -1,8 +1,22 @@
+import os
+import logging
 from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
 from model.project_models import Register, UpdateProject
 from schema.project_schema import list_serial
 from .auth_route import authenticate_user, Role
+
+# Create a log directory if it doesn't exist
+log_dir = "log"
+os.makedirs(log_dir, exist_ok=True)
+
+# Configure logging for project_route
+project_logger = logging.getLogger("project")
+project_file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_dir, 'project.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
+project_file_handler.setLevel(logging.INFO)
+project_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+project_file_handler.setFormatter(project_formatter)
+project_logger.addHandler(project_file_handler)
 
 project_router = APIRouter()
 
@@ -10,44 +24,53 @@ project_router = APIRouter()
 async def create_project(project: Register, current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin or manager
     if current_user["role"] not in [Role.admin, Role.manager]:
+        project_logger.warning("Unauthorized attempt to create project by user %s", current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can create projects")
 
     # Check if the managerId matches the current user's username
     if current_user["role"] == Role.manager and project.managerId != current_user["username"]:
+        project_logger.warning("Manager %s tried to create project for another manager %s", current_user["username"], project.managerId)
         raise HTTPException(status_code=403, detail="You are only allowed to create projects for yourself")
 
     sql_query = "INSERT INTO project (projectId, name, description, managerId) VALUES (%s, %s, %s, %s);"
     try:
         cursor.execute(sql_query, (project.projectId, project.name, project.description, project.managerId))
         sql.commit()
+        project_logger.info("Project %s created successfully by user %s", project.projectId, current_user["username"])
         return {"message": "Project added successfully"}
     except Exception as e:
+        project_logger.error("Error creating project %s: %s", project.projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @project_router.get("/all_projects")
 async def get_all_projects(current_user: dict = Depends(authenticate_user)):
-    # Check if the user is admin or manager
-    if current_user["role"] not in [Role.admin, Role.manager,Role.user]:
-        raise HTTPException(status_code=403, detail="Only admin or manager or user can retrieve all projects")
+    # Check if the user is admin, manager, or user
+    if current_user["role"] not in [Role.admin, Role.manager, Role.user]:
+        project_logger.warning("Unauthorized attempt to retrieve all projects by user %s", current_user["username"])
+        raise HTTPException(status_code=403, detail="Only admin, manager, or user can retrieve all projects")
 
     sql_query = "SELECT * FROM project;"
     try:
         cursor.execute(sql_query)
         values = cursor.fetchall()
+        project_logger.info("All projects retrieved successfully by user %s", current_user["username"])
         return list_serial(values)
     except Exception as e:
+        project_logger.error("Error retrieving all projects: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @project_router.put("/{projectId}")
 async def update_project(projectId: str, project: UpdateProject, current_user: dict = Depends(authenticate_user)):
-    # Check if the user is admin
+    # Check if the user is admin or manager
     if current_user["role"] not in [Role.admin, Role.manager]:
+        project_logger.warning("Unauthorized attempt to update project %s by user %s", projectId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can update projects")
-
 
     # Check if the managerId matches the current user's username
     if current_user["role"] == Role.manager and project.managerId != current_user["username"]:
+        project_logger.warning("Manager %s tried to update project %s for another manager %s", current_user["username"], projectId, project.managerId)
         raise HTTPException(status_code=403, detail="You are only allowed to update projects for yourself")
 
     # Check if the projectId exists and if the managerId matches the current user's username
@@ -56,18 +79,23 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
         cursor.execute(sql_query_check, (projectId,))
         result = cursor.fetchone()
         if not result:
+            project_logger.warning("Project %s not found for update by user %s", projectId, current_user["username"])
             raise HTTPException(status_code=404, detail="Project not found")
         elif current_user["role"] == Role.manager and result[0] != current_user["username"]:
+            project_logger.warning("Manager %s tried to update project %s which is not assigned to them", current_user["username"], projectId)
             raise HTTPException(status_code=403, detail="You are only allowed to update your own projects")
     except Exception as e:
+        project_logger.error("Error checking project %s for update: %s", projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
     sql_query = "UPDATE project SET name = %s, description = %s, managerId = %s WHERE projectId = %s;"
     try:
         cursor.execute(sql_query, (project.name, project.description, project.managerId, projectId))
         sql.commit()
+        project_logger.info("Project %s updated successfully by user %s", projectId, current_user["username"])
         return {"message": "Project updated successfully"}
     except Exception as e:
+        project_logger.error("Error updating project %s: %s", projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -75,6 +103,7 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
 async def delete_project(projectId: str, current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin or manager
     if current_user["role"] not in [Role.admin, Role.manager]:
+        project_logger.warning("Unauthorized attempt to delete project %s by user %s", projectId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can delete projects")
 
     # Check if the projectId exists
@@ -83,12 +112,15 @@ async def delete_project(projectId: str, current_user: dict = Depends(authentica
         cursor.execute(sql_query_check, (projectId,))
         result = cursor.fetchone()
         if not result:
+            project_logger.warning("Project %s not found for deletion by user %s", projectId, current_user["username"])
             raise HTTPException(status_code=404, detail="Project not found")
     except Exception as e:
+        project_logger.error("Error checking project %s for deletion: %s", projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
     # Check if the current user is the manager assigned to the project
     if current_user["role"] == Role.manager and result[0] != current_user["username"]:
+        project_logger.warning("Manager %s tried to delete project %s which is not assigned to them", current_user["username"], projectId)
         raise HTTPException(status_code=403, detail="You can only delete projects assigned to you")
 
     # Perform deletion
@@ -96,6 +128,8 @@ async def delete_project(projectId: str, current_user: dict = Depends(authentica
     try:
         cursor.execute(sql_query, (projectId,))
         sql.commit()
+        project_logger.info("Project %s deleted successfully by user %s", projectId, current_user["username"])
         return {"message": "Project deleted successfully"}
     except Exception as e:
+        project_logger.error("Error deleting project %s: %s", projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
