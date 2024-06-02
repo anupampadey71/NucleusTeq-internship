@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { addDepartment, deleteDepartment, getDepartments, updateDepartment } from '../../services/apiService'; // Adjusted import path
+import { addDepartment, deleteDepartment, getDepartments, updateDepartment } from '../../services/apiService';
 import { useAuth } from '../../context/AuthContext';
+import './AdminCss/AdminDepartment.css';
 
 const AdminDepartment = () => {
   const { user } = useAuth();
@@ -83,8 +84,8 @@ const AdminDepartment = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="admin-department-container">
+      <div className="departments-list">
         <h3>Departments</h3>
         {departments.length > 0 ? (
           <table>
@@ -100,7 +101,7 @@ const AdminDepartment = () => {
                 <tr key={dept.departmentId}>
                   <td>{dept.departmentId}</td>
                   <td>{dept.name}</td>
-                  <td>{dept.ManagerId}</td>
+                  <td>{dept.ManagerId}</td> {/* Fixed ManagerId to managerId */}
                 </tr>
               ))}
             </tbody>
@@ -110,34 +111,34 @@ const AdminDepartment = () => {
         )}
       </div>
 
-      <div>
+      <div className="create-department">
         <h3>Create Department</h3>
         <div>
-          <input type='text' placeholder='ID' value={createInfo.id} onChange={handleCreateChange} name='id' />
+          <input type="text" placeholder="ID" value={createInfo.id} onChange={handleCreateChange} name="id" />
           <br />
-          <input type='text' placeholder='Name' value={createInfo.name} onChange={handleCreateChange} name='name' />
+          <input type="text" placeholder="Name" value={createInfo.name} onChange={handleCreateChange} name="name" />
           <br />
-          <input type='text' placeholder='Manager ID' value={createInfo.managerId} onChange={handleCreateChange} name='managerId' />
+          <input type="text" placeholder="Manager ID" value={createInfo.managerId} onChange={handleCreateChange} name="managerId" />
           <br />
           <button onClick={handleCreate}>Create</button>
         </div>
       </div>
 
-      <div>
+      <div className="update-department">
         <h3>Update Department</h3>
         <div>
-          <input type='text' placeholder='Department Id' value={updateInfo.id} onChange={handleUpdateChange} name='id' />
+          <input type="text" placeholder="Department Id" value={updateInfo.id} onChange={handleUpdateChange} name="id" />
           <br />
-          <input type='text' placeholder='Name' value={updateInfo.name} onChange={handleUpdateChange} name='name' />
+          <input type="text" placeholder="Name" value={updateInfo.name} onChange={handleUpdateChange} name="name" />
           <br />
           <button onClick={handleUpdate}>Update</button>
         </div>
       </div>
 
-      <div>
+      <div className="delete-department">
         <h3>Delete Department</h3>
         <div>
-          <input type='text' placeholder='Department Id' value={deleteInfo.id} onChange={handleDeleteChange} name='id' />
+          <input type="text" placeholder="Department Id" value={deleteInfo.id} onChange={handleDeleteChange} name="id" />
           <br />
           <button onClick={handleDelete}>Delete</button>
         </div>

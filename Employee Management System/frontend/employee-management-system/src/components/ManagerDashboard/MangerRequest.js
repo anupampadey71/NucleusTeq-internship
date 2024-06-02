@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addRequest, deleteRequest, getAllRequests, updateRequest } from '../../services/apiService';
 import { useAuth } from '../../context/AuthContext';
+import './ManagerCss/ManagerRequest.css';
 
 const ManagerRequest = () => {
   const { user } = useAuth();
@@ -73,10 +74,9 @@ const ManagerRequest = () => {
   }, [refetch]);
 
   return (
-    <div>
-      <h2>Request Operations</h2>
-      <div>
-        <h3>All Requests for manager</h3>
+    <div className="manager-request-container">
+      <div className="requests-list">
+        <h2>Request List</h2>
         <table>
           <thead>
             <tr>
@@ -98,62 +98,69 @@ const ManagerRequest = () => {
           </tbody>
         </table>
       </div>
-      <div>
-        <h3>Add Request</h3>
-        <input 
-          type="text" 
-          placeholder="Request ID" 
-          value={requestId} 
-          onChange={(e) => setRequestId(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="Project ID" 
-          value={projectId} 
-          onChange={(e) => setProjectId(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="Skill ID" 
-          value={skillId} 
-          onChange={(e) => setSkillId(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="Status" 
-          value={status} 
-          onChange={(e) => setStatus(e.target.value)} 
-        />
-        <button onClick={handleAddRequest}>Add Request</button>
-      </div>
-      <div>
-        <h3>Update Request</h3>
-        <input 
-          type="text" 
-          placeholder="Request ID" 
-          value={requestIdToUpdate} 
-          onChange={(e) => setRequestIdToUpdate(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="New Status" 
-          value={newStatus} 
-          onChange={(e) => setNewStatus(e.target.value)} 
-        />
-        <button onClick={handleUpdateRequest}>Update Request</button>
-      </div>
-      <div>
-        <h3>Delete Request</h3>
-        <input 
-          type="text" 
-          placeholder="Request ID" 
-          value={requestIdToDelete} 
-          onChange={(e) => setRequestIdToDelete(e.target.value)} 
-        />
-        <button onClick={handleDeleteRequest}>Delete Request</button>
+  
+      <div className="request-operation-container">
+        <div>
+          <h3>Add Request</h3>
+          <input 
+            type="text" 
+            placeholder="Request ID" 
+            value={requestId} 
+            onChange={(e) => setRequestId(e.target.value)} 
+          />
+          <input 
+            type="text" 
+            placeholder="Project ID" 
+            value={projectId} 
+            onChange={(e) => setProjectId(e.target.value)} 
+          />
+          <input 
+            type="text" 
+            placeholder="Skill ID" 
+            value={skillId} 
+            onChange={(e) => setSkillId(e.target.value)} 
+          />
+          <input 
+            type="text" 
+            placeholder="Status" 
+            value={status} 
+            onChange={(e) => setStatus(e.target.value)} 
+          />
+          <button onClick={handleAddRequest}>Add Request</button>
+        </div>
+  
+        <div>
+          <h3>Update Request</h3>
+          <input 
+            type="text" 
+            placeholder="Request ID" 
+            value={requestIdToUpdate} 
+            onChange={(e) => setRequestIdToUpdate(e.target.value)} 
+          />
+          <input 
+            type="text" 
+            placeholder="New Status" 
+            value={newStatus} 
+            onChange={(e) => setNewStatus(e.target.value)} 
+          />
+          <button onClick={handleUpdateRequest}>Update Request</button>
+        </div>
+  
+        <div>
+          <h3>Delete Request</h3>
+          <input 
+            type="text" 
+            placeholder="Request ID" 
+            value={requestIdToDelete} 
+            onChange={(e) => setRequestIdToDelete(e.target.value)} 
+          />
+          <button onClick={handleDeleteRequest}>Delete Request</button>
+        </div>
       </div>
     </div>
   );
+  
 };
 
 export default ManagerRequest;
+

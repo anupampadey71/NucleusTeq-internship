@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployeeSkills } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './ManagerCss/ManagerEmployeeSkill.css';
 
 const ManagerEmployeeSkill = () => {
   const { user } = useAuth();
@@ -24,28 +25,35 @@ const ManagerEmployeeSkill = () => {
   }, [employeeId]);
 
   return (
-    <div>
-      <h2>Skills of Each Employee under Manger</h2>
-      <div>
-        {/* <h3>Get Employee Skills</h3> */}
+    <div className="manager-employee-skill-container">
+      <h2>Skills of Each Employee under Manager</h2>
+      <div className="employee-skill-search">
         <input 
           type="text" 
           placeholder="Employee ID" 
           value={employeeId} 
           onChange={(e) => setEmployeeId(e.target.value)} 
         />
-        {/* <button onClick={() => fetchEmployeeSkills(employeeId)}>Get Skills</button> */}
-        {employeeSkills.length > 0 && (
-          <div>
-            <h4>Skills for Employee ID: {employeeId}</h4>
-            <ul>
-              {employeeSkills.map((skill, index) => (
-                <li key={index}>{skill}</li>
-              ))}
-            </ul>
-          </div>
-        )}
       </div>
+      {employeeSkills.length > 0 && (
+        <div className="employee-skill-list">
+          <h4>Skills for Employee ID: {employeeId}</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Skill</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employeeSkills.map((skill, index) => (
+                <tr key={index}>
+                  <td>{skill}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

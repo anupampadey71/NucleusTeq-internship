@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addProject, deleteProject, getAllProjects, updateProject } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './AdminCss/AdminProject.css'; // Imported AdminProject.css
 
 const AdminProject = () => {
   const { user } = useAuth();
@@ -81,9 +82,8 @@ const AdminProject = () => {
   }, [refetch]);
 
   return (
-    <div>
-      <h2>Project</h2>
-      <div>
+    <div className="admin-project-container"> {/* Added class name */}
+      <div className="projects-list"> {/* Added class name */}
         <h3>Projects Table</h3>
         <table>
           <thead>
@@ -106,7 +106,7 @@ const AdminProject = () => {
           </tbody>
         </table>
       </div>
-      <div>
+      <div className="create-project"> {/* Added class name */}
         <h3>Add Project</h3>
         <input 
           type="text" 
@@ -134,7 +134,7 @@ const AdminProject = () => {
         />
         <button onClick={handleAddProject}>Add Project</button>
       </div>
-      <div>
+      <div className="update-project"> {/* Added class name */}
         <h3>Update Project</h3>
         <input 
           type="text" 
@@ -162,7 +162,7 @@ const AdminProject = () => {
         />
         <button onClick={handleUpdateProject}>Update Project</button>
       </div>
-      <div>
+      <div className="delete-project"> {/* Added class name */}
         <h3>Delete Project</h3>
         <input 
           type="text" 

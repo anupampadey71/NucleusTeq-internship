@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Make sure you have `react-router-dom` installed
 import { useAuth } from '../../context/AuthContext';
+import './UserCss/UserDashboard.css'
 
 const UserDashboard = () => {
   const { user } = useAuth();
@@ -11,35 +12,34 @@ const UserDashboard = () => {
   };
 
   return (
-    <div>
+    <div className="user-dashboard-container">
       <h2>User Dashboard</h2>
-      <nav style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
-        <Link to="/user/departments" style={{ margin: '0 10px', textDecoration: 'none' }}>
+      <nav className="user-nav">
+        <Link to="/user/departments" className="nav-link">
           Departments
         </Link>
-        <Link to="/user/employees" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/user/employees" className="nav-link">
           Employees
         </Link>
-        
-        <Link to="/user/skillsets" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/user/skillsets" className="nav-link">
           Skillsets
         </Link>
-        <Link to="/user/managers" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/user/managers" className="nav-link">
           Manager
         </Link>
-        <Link to="/user/employeeskills" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/user/employeeskills" className="nav-link">
           EmployeeSkills
         </Link>
-        <Link to="/user/projects" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/user/projects" className="nav-link">
           Projects
         </Link>
-        
-        <Link to="/user/assignments" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/user/assignments" className="nav-link">
           Assignment
         </Link>
       </nav>
     </div>
   );
+  
 };
 
 export default UserDashboard;

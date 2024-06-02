@@ -1,0 +1,27 @@
+.user-project-container {
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .user-project-container table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-project-container th, .user-project-container td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+  }
+  
+  .user-project-container th {
+    background-color: #f2f2f2;
+  }
+  
+  .user-project-container tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .user-project-container tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  

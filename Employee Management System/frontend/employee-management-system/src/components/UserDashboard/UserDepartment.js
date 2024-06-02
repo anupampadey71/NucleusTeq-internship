@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDepartments } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
-
+import './UserCss/UserDepartment.css'
 const UserDepartment = () => {
   const { user } = useAuth();
   const [departments, setDepartments] = useState([]);
@@ -20,8 +20,8 @@ const UserDepartment = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="user-department-container">
+      <div className="departments-list">
         <h3>Departments Table</h3>
         {departments.length > 0 ? (
           <table>
@@ -48,6 +48,7 @@ const UserDepartment = () => {
       </div>
     </div>
   );
+  
 };
 
 export default UserDepartment;

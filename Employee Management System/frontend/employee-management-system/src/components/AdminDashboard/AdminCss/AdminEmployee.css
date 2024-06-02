@@ -1,0 +1,56 @@
+.admin-employee-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .employees-list {
+    width: 100%;
+  }
+  
+  .employees-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .employees-list th, .employees-list td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+  }
+  
+  .employees-list th {
+    background-color: #f2f2f2;
+  }
+  
+  .employees-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .employees-list tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  .create-employee, .update-employee, .delete-employee {
+    margin-top: 20px;
+    width: calc(33.33% - 20px); /* Adjust width to fit three columns with space between */
+  }
+  
+  .create-employee input, .update-employee input, .delete-employee input {
+    margin-bottom: 10px;
+  }
+  
+  .create-employee button, .update-employee button, .delete-employee button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-employee button:hover, .update-employee button:hover, .delete-employee button:hover {
+    background-color: #0056b3;
+  }
+  

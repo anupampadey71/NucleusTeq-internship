@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployees } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './UserCss/UserEmployee.css'
 
 const UserEmployee = () => {
   const { user } = useAuth();
@@ -20,8 +21,8 @@ const UserEmployee = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="user-employee-container">
+      <div className="employees-list">
         <h3>Employees Table</h3>
         {employees.length > 0 ? (
           <table>
@@ -54,6 +55,7 @@ const UserEmployee = () => {
       </div>
     </div>
   );
+  
 };
 
 export default UserEmployee;

@@ -1,0 +1,34 @@
+.user-employee-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .employees-list {
+    width: 100%;
+  }
+  
+  .employees-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .employees-list th, .employees-list td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+  }
+  
+  .employees-list th {
+    background-color: #f2f2f2;
+  }
+  
+  .employees-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .employees-list tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  

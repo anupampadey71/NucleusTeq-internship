@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployees } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
-
+import './ManagerCss/ManagerEmployee.css';
 const ManagerEmployee = () => {
   const { user } = useAuth();
   const [employees, setEmployees] = useState([]);
@@ -20,8 +20,8 @@ const ManagerEmployee = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="manager-employee-container">
+      <div className="employees-list">
         <h3>Employees Table</h3>
         {employees.length > 0 ? (
           <table>

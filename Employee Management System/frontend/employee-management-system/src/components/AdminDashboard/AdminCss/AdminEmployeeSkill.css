@@ -1,0 +1,65 @@
+.admin-employee-skill-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .employee-skills-list {
+    width: 100%;
+  }
+  
+  .employee-skills-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .employee-skills-list th,
+  .employee-skills-list td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+  }
+  
+  .employee-skills-list th {
+    background-color: #f2f2f2;
+  }
+  
+  .employee-skills-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .employee-skills-list tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  .create-employee-skill,
+  .update-employee-skill,
+  .delete-employee-skill {
+    margin-top: 20px;
+    width: calc(33.33% - 20px);
+  }
+  
+  .create-employee-skill input,
+  .update-employee-skill input,
+  .delete-employee-skill input {
+    margin-bottom: 10px;
+  }
+  
+  .create-employee-skill button,
+  .update-employee-skill button,
+  .delete-employee-skill button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-employee-skill button:hover,
+  .update-employee-skill button:hover,
+  .delete-employee-skill button:hover {
+    background-color: #0056b3;
+  }
+  

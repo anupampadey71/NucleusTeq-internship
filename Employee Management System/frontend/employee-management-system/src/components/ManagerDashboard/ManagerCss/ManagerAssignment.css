@@ -1,0 +1,30 @@
+.manager-assignment-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.assignments-list {
+    width: 100%;
+}
+
+.assignments-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.assignments-list th, .assignments-list td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+}
+
+.assignments-list th {
+    background-color: #f2f2f2;
+}
+
+.assignments-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.assignments-list tr:nth-child(odd) {
+    background-color: #ffffff;
+}

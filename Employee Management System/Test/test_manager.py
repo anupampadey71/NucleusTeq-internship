@@ -94,18 +94,14 @@ def test_delete_manager():
     assert response.json() == {"message": "Manager deleted successfully"}
 
 
-# def test_get_user_manager():
-#     """Tests retrieving the manager of a logged-in user"""
-#     # Authenticate to get the token
-#     token = get_token("EMP003", "EMP003")
+def get_user_manager(username, password):
+    """Function to get the manager ID corresponding to the logged-in user"""
+    # Authenticate to get the token
+    token = get_token(EMP001, EMP001)
 
-#     # Send GET request to retrieve the manager for the user EMP003
-#     response = client.get("/manager/user/manager/", headers={"Authorization": f"Bearer {token}"})
+    # Send GET request to retrieve the manager ID
+    response = client.get(f"/manager/user/manager/?username={username}&password={password}", headers={"Authorization": f"Bearer {token}"})
 
-#     # Print the response for debugging
-#     print(f"Response status code: {response.status_code}")
-#     print(f"Response body: {response.json()}")
-
-#     # Assert successful retrieval
-#     assert response.status_code == 200
-#     assert "managerId" in response.json()
+    # Assert successful retrieval and return the manager ID
+    assert response.status_code == 200
+    return response.json()["managerId"]
