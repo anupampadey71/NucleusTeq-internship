@@ -17,8 +17,8 @@ def test_create_request():
     """Tests creating a new request"""
     # Define data for the request
     data = {
-        "requestId": "REQ006",
-        "projectId": "PROJ001",
+        "requestId": "REQ007",
+        "projectId": "PROJ002",
         "skillId": "SKILL004",
         "status": "Open"
     }
@@ -58,7 +58,7 @@ def test_update_request():
     token = get_token("MGR001", "MGR001")
 
     # Send PUT request to update request
-    response = client.put("/request/REQ006", 
+    response = client.put("/request/REQ007", 
                           params={"status": "Closed", "username": "MGR001", "password": "MGR001"},
                           headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
@@ -73,7 +73,7 @@ def test_delete_request():
     token = get_token("MGR001", "MGR001")
 
     # Send DELETE request to delete the request
-    response = client.delete("/request/REQ006", 
+    response = client.delete("/request/REQ007", 
                              params={"username": "MGR001", "password": "MGR001"},
                              headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 

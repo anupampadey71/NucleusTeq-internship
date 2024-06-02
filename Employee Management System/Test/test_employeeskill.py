@@ -17,7 +17,7 @@ def test_create_employee_skill():
     # Define data for the employee skill association
     data = {
         "employeeId": "EMP001",
-        "skillId": "SKILL003"
+        "skillId": "SKILL004"
     }
 
     # Authenticate to get the token
@@ -41,7 +41,7 @@ def test_update_employee_skill():
 
     # Send PUT request to update employee skill
     response = client.put("/employeeskill/", 
-                          params={"employee_id": "EMP001", "current_skill_id": "SKILL003", "new_skill_id": "SKILL004", "username": "EMP001", "password": "EMP001"},
+                          params={"employee_id": "EMP001", "current_skill_id": "SKILL004", "new_skill_id": "SKILL004", "username": "EMP001", "password": "EMP001"},
                           headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
     # Assert successful update

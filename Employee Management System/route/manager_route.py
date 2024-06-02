@@ -2,8 +2,8 @@ import os
 import logging
 from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
-from model.manager_models import Register  
-from schema.manager_schema import list_serial  
+from model.manager_models import Register
+from schema.manager_schema import list_serial
 from .auth_route import authenticate_user, Role  # Assuming you have an auth_route with authentication logic
 
 # Create a log folder if it doesn't exist
@@ -12,6 +12,7 @@ os.makedirs(log_folder, exist_ok=True)
 
 # Configure logging for manager_route
 manager_logger = logging.getLogger("manager")
+manager_logger.setLevel(logging.INFO)
 manager_file_handler = logging.handlers.RotatingFileHandler(
     os.path.join(log_folder, 'manager.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
 manager_file_handler.setLevel(logging.INFO)
@@ -35,7 +36,7 @@ async def add_manager(info: Register, current_user: dict = Depends(authenticate_
             manager_logger.warning("Manager %s attempted to add another manager %s", current_user["username"], info.managerId)
             raise HTTPException(status_code=403, detail="Managers can only add themselves as managers")
 
-        sql_query = "INSERT INTO manager VALUES (%s, %s);"
+        sql_query = "INSERT INTO manager (managerId, employeeId) VALUES (%s, %s);"
         cursor.execute(sql_query, (info.managerId, info.employeeId))
         sql.commit()
         manager_logger.info("Manager %s added successfully by user %s", info.managerId, current_user["username"])

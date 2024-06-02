@@ -12,16 +12,24 @@ skillset_router = APIRouter()
 log_dir = "log"
 os.makedirs(log_dir, exist_ok=True)
 
-# Configure logging for skillset_route
+# Configure logging for skillset_router
 skillset_logger = logging.getLogger("skillset")
-skillset_file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_dir, 'skillset.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
+skillset_logger.setLevel(logging.INFO)
+
+# Create a file handler for the skillset log
+skillset_file_handler = logging.FileHandler(os.path.join(log_dir, 'skillset.log'))
 skillset_file_handler.setLevel(logging.INFO)
+
+# Create a formatter and set it for the file handler
 skillset_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 skillset_file_handler.setFormatter(skillset_formatter)
+
+# Add the file handler to the logger
 skillset_logger.addHandler(skillset_file_handler)
 
 @skillset_router.post("/")
 async def create_skillset(info: Register, current_user: dict = Depends(authenticate_user)):
+    """Create a new skill."""
     # Check if the user is admin
     if current_user["role"] != Role.admin:
         skillset_logger.warning("Unauthorized attempt to create skill by user %s", current_user["username"])
@@ -39,6 +47,7 @@ async def create_skillset(info: Register, current_user: dict = Depends(authentic
 
 @skillset_router.get("/all_skills")
 async def get_all_skills(current_user: dict = Depends(authenticate_user)):
+    """Retrieve all skills."""
     # Check if the user is admin, manager, or user
     if current_user["role"] not in [Role.admin, Role.manager, Role.user]:
         skillset_logger.warning("Unauthorized attempt to retrieve skills by user %s", current_user["username"])
@@ -56,6 +65,7 @@ async def get_all_skills(current_user: dict = Depends(authenticate_user)):
 
 @skillset_router.put("/{skillId}")
 async def update_skill_name(skillId: str, name: str, current_user: dict = Depends(authenticate_user)):
+    """Update the name of a skill."""
     # Check if the user is admin
     if current_user["role"] != Role.admin:
         skillset_logger.warning("Unauthorized attempt to update skill %s by user %s", skillId, current_user["username"])
@@ -73,6 +83,7 @@ async def update_skill_name(skillId: str, name: str, current_user: dict = Depend
 
 @skillset_router.delete("/{skillId}")
 async def delete_skill(skillId: str, current_user: dict = Depends(authenticate_user)):
+    """Delete a skill."""
     # Check if the user is admin
     if current_user["role"] != Role.admin:
         skillset_logger.warning("Unauthorized attempt to delete skill %s by user %s", skillId, current_user["username"])

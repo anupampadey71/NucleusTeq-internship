@@ -28,7 +28,7 @@ def test_create_project():
     }
 
     # Authenticate as admin to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Send POST request to create project
     response = client.post("/project/?username=admin_user&password=admin_password", json=data, headers={"Authorization": f"Bearer {token}"})
@@ -40,7 +40,7 @@ def test_create_project():
 def test_get_all_projects():
     """Tests retrieving all projects"""
     # Authenticate to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Send GET request to retrieve all projects
     response = client.get("/project/all_projects?username=admin_user&password=admin_password", headers={"Authorization": f"Bearer {token}"})
@@ -58,7 +58,7 @@ def test_update_project():
     }
 
     # Authenticate to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Construct the request URL with query parameters
     url = f"/project/{project_id}?username=admin_user&password=admin_password"
@@ -84,7 +84,7 @@ def test_delete_project():
     project_id = "PROJ005"
 
     # Authenticate as admin to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Send DELETE request to delete the project
     response = client.delete(f"/project/{project_id}?username=admin_user&password=admin_password", headers={"Authorization": f"Bearer {token}"})

@@ -14,10 +14,17 @@ os.makedirs(log_dir, exist_ok=True)
 
 # Configure logging for request_router
 request_logger = logging.getLogger("request")
-request_file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_dir, 'request.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
+request_logger.setLevel(logging.INFO)
+
+# Create a file handler for the logger
+request_file_handler = logging.FileHandler(os.path.join(log_dir, 'request.log'))
 request_file_handler.setLevel(logging.INFO)
+
+# Create a formatter and set it for the file handler
 request_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 request_file_handler.setFormatter(request_formatter)
+
+# Add the file handler to the logger
 request_logger.addHandler(request_file_handler)
 
 def get_manager_id(project_id: str):
@@ -137,3 +144,4 @@ async def delete_request(requestId: str, current_user: dict = Depends(authentica
         raise HTTPException(status_code=500, detail=str(e))
     
     return {"message": "Request deleted successfully"}
+
