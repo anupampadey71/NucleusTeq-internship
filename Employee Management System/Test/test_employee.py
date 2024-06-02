@@ -20,7 +20,7 @@ def test_main():
 def test_enter_employee_details():
     # Define the data for the employee details
     data = {
-        "employeeId": "EMP006",
+        "employeeId": "EMP007",
         "email": "rashmi.pandey@company.com",
         "name": "rashmi pandey",
         "salary": 100000,
@@ -28,7 +28,7 @@ def test_enter_employee_details():
     }
 
     # Authenticate to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Make a POST request to the endpoint with the provided data and token
     response = client.post(f"/employees/?username=admin_user&password=admin_password", json=data)
@@ -39,7 +39,7 @@ def test_enter_employee_details():
 
 def test_get_my_info():
     # Authenticate to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Make a GET request to get employee info with token
     response = client.get("/employees/my_info?username=admin_user&password=admin_password")
@@ -50,7 +50,7 @@ def test_get_my_info():
 
 def test_update_employee_details():
     # Define employee ID and updated details
-    employee_id = "EMP006"
+    employee_id = "EMP007"
     updated_details = {
         "email": "rashmi.tiwari@company.com",
         "name": "rashmi Tiwari",
@@ -60,7 +60,7 @@ def test_update_employee_details():
     }
 
     # Authenticate to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Make a PUT request to update the employee details with token
     response = client.put(f"/employees/{employee_id}?username=admin_user&password=admin_password", json=updated_details)
@@ -71,10 +71,10 @@ def test_update_employee_details():
 
 def test_delete_employee():
     # Define employee ID to be deleted
-    employee_id = "EMP006"
+    employee_id = "EMP007"
 
     # Authenticate to get the token
-    token = get_token("admin_user", "admin_password")
+    token = get_token("ADM001", "ADM001")
 
     # Make a DELETE request to delete the employee record with token
     response = client.delete(f"/employees/?employeeId={employee_id}&username=admin_user&password=admin_password")

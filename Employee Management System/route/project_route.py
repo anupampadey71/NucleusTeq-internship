@@ -1,5 +1,6 @@
 import os
 import logging
+import logging.handlers
 from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
 from model.project_models import Register, UpdateProject
@@ -12,6 +13,8 @@ os.makedirs(log_dir, exist_ok=True)
 
 # Configure logging for project_route
 project_logger = logging.getLogger("project")
+project_logger.setLevel(logging.INFO)  # Set log level to INFO
+
 project_file_handler = logging.handlers.RotatingFileHandler(os.path.join(log_dir, 'project.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
 project_file_handler.setLevel(logging.INFO)
 project_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
