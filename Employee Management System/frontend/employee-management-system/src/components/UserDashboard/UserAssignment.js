@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllAssignments } from '../../services/apiService'; // Reusing the same API service as ManagerAssignment
 import { useAuth } from '../../context/AuthContext';
+import './UserCss/UserAssignment.css'; // Import CSS file
 
 const UserAssignment = () => {
   const { user } = useAuth();
@@ -22,10 +23,9 @@ const UserAssignment = () => {
   }, [refetch]);
 
   return (
-    <div>
-      <h2>Your Assignmented projects</h2>
+    <div className="user-assignment-container">
+      <h2>Your Assigned Projects</h2>
       <div>
-        <h3> Assignments Table</h3>
         <table>
           <thead>
             <tr>

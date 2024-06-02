@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addManager, deleteManager, getManagers, updateManager, getManagerEmployees } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './AdminCss/AdminManager.css';
 
 const AdminManager = () => {
   const { user } = useAuth();
@@ -77,30 +78,32 @@ const AdminManager = () => {
   }, [refetch]);
 
   return (
-    <div>
-      <h2>Managers</h2>
-      <div>
-        <h3>Managers Table</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Manager ID</th>
-              <th>Employee ID</th>
-            </tr>
-          </thead>
-          <tbody>
-            {managers.map((manager, index) => (
-              <tr key={index}>
-                <td>{manager.ManagerId}</td>
-                <td>{manager.employeeId}</td>
+    <div className="admin-manager-container">
+      <div className="managers-list">
+        <h3>Managers</h3>
+        <div>
+          <h3>Managers Table</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Manager ID</th>
+                <th>Employee ID</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {managers.map((manager, index) => (
+                <tr key={index}>
+                  <td>{manager.ManagerId}</td>
+                  <td>{manager.employeeId}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-
-      <div>
-        <h3>Get Employees under Manager </h3>
+  
+      <div className="get-employees">
+        <h3>Get Employees under Manager</h3>
         <input type="text" placeholder="Manager ID" value={managerId} onChange={(e) => setManagerId(e.target.value)} />
         <button onClick={handleGetManagerEmployees}>Get Employees</button>
         {managerEmployees.length > 0 && (
@@ -114,30 +117,31 @@ const AdminManager = () => {
           </div>
         )}
       </div>
-      <div>
+  
+      <div className="add-manager">
         <h3>Add Manager</h3>
         <input type="text" placeholder="Manager ID" value={addManagerId} onChange={(e) => setAddManagerId(e.target.value)} />
         <input type="text" placeholder="Employee ID" value={addEmployeeId} onChange={(e) => setAddEmployeeId(e.target.value)} />
         <button onClick={handleAddManager}>Add Manager</button>
       </div>
-      
-      
-      <div>
+  
+      <div className="update-manager">
         <h3>Update Manager</h3>
         <input type="text" placeholder="Manager ID" value={managerIdUpdate} onChange={(e) => setManagerIdUpdate(e.target.value)} />
         <input type="text" placeholder="Old Employee ID" value={oldEmployeeId} onChange={(e) => setOldEmployeeId(e.target.value)} />
         <input type="text" placeholder="New Employee ID" value={newEmployeeId} onChange={(e) => setNewEmployeeId(e.target.value)} />
         <button onClick={handleUpdateManager}>Update Manager</button>
       </div>
-      <div>
+  
+      <div className="delete-manager">
         <h3>Delete Manager</h3>
         <input type="text" placeholder="Manager ID" value={managerIdDelete} onChange={(e) => setManagerIdDelete(e.target.value)} />
         <input type="text" placeholder="Employee ID" value={employeeId} onChange={(e) => setEmployeeId(e.target.value)} />
         <button onClick={handleDeleteManager}>Delete Manager</button>
       </div>
-      
     </div>
   );
+  
 };
 
 export default AdminManager;

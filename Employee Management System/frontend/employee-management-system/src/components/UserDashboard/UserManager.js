@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getUserManager } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
-
+import './UserCss/UserManager.css'
 const UserManager = () => {
   const { user } = useAuth();
   const [managerId, setManagerId] = useState('');
@@ -23,15 +23,15 @@ const UserManager = () => {
   }, [refetch]);
 
   return (
-    <div>
-      <h2>Your Manager </h2>
-
+    <div className="user-manager-container">
+      <h2>Your Manager</h2>
       <div>
         {/* <h3>Logged-In User Manager ID</h3> */}
         <p>{loggedInUserManagerId}</p>
       </div>
     </div>
   );
+  
 };
 
 export default UserManager;

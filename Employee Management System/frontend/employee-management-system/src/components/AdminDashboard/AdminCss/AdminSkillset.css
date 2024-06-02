@@ -1,0 +1,56 @@
+.admin-skillset-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .skillsets-list {
+    width: 100%;
+  }
+  
+  .skillsets-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .skillsets-list th, .skillsets-list td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+  }
+  
+  .skillsets-list th {
+    background-color: #f2f2f2;
+  }
+  
+  .skillsets-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .skillsets-list tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  .create-skillset, .update-skillset, .delete-skillset {
+    margin-top: 20px;
+    width: calc(33.33% - 20px); /* Adjust width to fit three columns with space between */
+  }
+  
+  .create-skillset input, .update-skillset input, .delete-skillset input {
+    margin-bottom: 10px;
+  }
+  
+  .create-skillset button, .update-skillset button, .delete-skillset button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .create-skillset button:hover, .update-skillset button:hover, .delete-skillset button:hover {
+    background-color: #0056b3;
+  }
+  

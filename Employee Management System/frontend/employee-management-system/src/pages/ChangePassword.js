@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { changePassword } from '../services/apiService';
+import './ChangePassword.css'; // Importing the CSS file for styling
 
 const ChangePassword = () => {
   const [username, setUsername] = useState('');
@@ -7,18 +8,20 @@ const ChangePassword = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    setMessage('');
+    setError('');
 
     if (newPassword !== confirmNewPassword) {
-      setMessage('New passwords do not match');
+      setError('New passwords do not match');
       return;
     }
 
     try {
       const response = await changePassword(username, oldPassword, newPassword);
-
       setMessage(response.data.message);
       setUsername('');
       setOldPassword('');
@@ -26,15 +29,15 @@ const ChangePassword = () => {
       setConfirmNewPassword('');
     } catch (error) {
       console.error('Failed to change password:', error.response ? error.response.data : error.message);
-      setMessage('Failed to change password. Please try again.');
+      setError('Failed to change password. Please try again.');
     }
   };
 
   return (
-    <div>
+    <div className="change-password-container">
       <h2>Change Password</h2>
-      <form onSubmit={handleChangePassword}>
-        <div>
+      <form onSubmit={handleChangePassword} className="change-password-form">
+        <div className="form-group">
           <label>Username:</label>
           <input
             type="text"
@@ -43,7 +46,7 @@ const ChangePassword = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Old Password:</label>
           <input
             type="password"
@@ -52,7 +55,7 @@ const ChangePassword = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>New Password:</label>
           <input
             type="password"
@@ -61,7 +64,7 @@ const ChangePassword = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label>Confirm New Password:</label>
           <input
             type="password"
@@ -70,9 +73,10 @@ const ChangePassword = () => {
             required
           />
         </div>
-        <button type="submit">Change Password</button>
+        <button type="submit" className="change-password-button">Change Password</button>
       </form>
-      {message && <p>{message}</p>}
+      {message && <p className="success-message">{message}</p>}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };

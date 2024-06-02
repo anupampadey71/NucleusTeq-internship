@@ -58,7 +58,8 @@ async def get_all_requests(current_user: dict = Depends(authenticate_user)):
         if project_ids:
             project_ids = [project[0] for project in project_ids]
             project_ids_str = ", ".join(["%s" for _ in project_ids])
-            sql_query = f"SELECT * FROM request WHERE projectId IN ({project_ids_str});"
+            # Fetch all requests associated with the manager's projects in ascending order of Request Id
+            sql_query = f"SELECT * FROM request WHERE projectId IN ({project_ids_str}) ORDER BY requestId ASC;"
             cursor.execute(sql_query, project_ids)
         else:
             # If no projects found for the manager, return empty list
@@ -66,7 +67,8 @@ async def get_all_requests(current_user: dict = Depends(authenticate_user)):
             return {"requests": []}
     elif current_user["role"] == Role.admin:
         # Admins can access all requests
-        sql_query = "SELECT * FROM request;"
+        # Fetch all requests in ascending order of Request Id
+        sql_query = "SELECT * FROM request ORDER BY requestId ASC;"
         cursor.execute(sql_query)
     else:
         # Regular users and other roles don't have access

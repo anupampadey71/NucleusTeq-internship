@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getAllRequests } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './AdminCss/AdminRequest.css';
 
 const AdminRequest = () => {
   const { user } = useAuth();
@@ -21,27 +22,29 @@ const AdminRequest = () => {
   }, []);
 
   return (
-    <div>
+    <div className="admin-request-container">
       <h2>Requests By Managers</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Request ID</th>
-            <th>Project ID</th>
-            <th>Skill ID</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {requests.map((request, index) => (
-            <tr key={index}>
-              {request.map((item, i) => (
-                <td key={i}>{item}</td>
-              ))}
+      <div className="requests-list">
+        <table>
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Project ID</th>
+              <th>Skill ID</th>
+              <th>Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {requests.map((request, index) => (
+              <tr key={index}>
+                {request.map((item, i) => (
+                  <td key={i}>{item}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

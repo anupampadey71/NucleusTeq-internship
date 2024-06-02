@@ -1,0 +1,27 @@
+.user-assignment-container {
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  .user-assignment-container table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-assignment-container th, .user-assignment-container td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+  }
+  
+  .user-assignment-container th {
+    background-color: #f2f2f2;
+  }
+  
+  .user-assignment-container tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .user-assignment-container tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  

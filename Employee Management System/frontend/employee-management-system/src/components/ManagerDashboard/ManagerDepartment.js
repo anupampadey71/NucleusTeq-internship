@@ -20,8 +20,8 @@ const ManagerDepartment = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="manager-department-container">
+      <div className="departments-list">
         <h3>Departments Table</h3>
         {departments.length > 0 ? (
           <table>

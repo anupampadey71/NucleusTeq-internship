@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { addEmployeeSkill, deleteEmployeeSkill, getEmployeeSkills, updateEmployeeSkill } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './AdminCss/AdminEmployeeSkill.css';
 
 const AdminEmployeeSkill = () => {
   const { user } = useAuth();
   const [employeeSkills, setEmployeeSkills] = useState([]);
   const [employeeId, setEmployeeId] = useState('');
-  const [skillId, setSkillId] = useState('');
   const [currentSkillId, setCurrentSkillId] = useState('');
   const [newSkillId, setNewSkillId] = useState('');
   const [employeeIdToAdd, setEmployeeIdToAdd] = useState('');
@@ -68,81 +68,105 @@ const AdminEmployeeSkill = () => {
   }, [employeeId, refetch]);
 
   return (
-    <div>
+    <div className="admin-employee-skill-container">
       <h2>Employee Skill Management</h2>
-      <div>
+
+      <div className="employee-skills-list">
         <h3>Get Employee Skills</h3>
-        <input 
-          type="text" 
-          placeholder="Employee ID" 
-          value={employeeId} 
-          onChange={(e) => setEmployeeId(e.target.value)} 
+        <input
+          type="text"
+          placeholder="Employee ID"
+          value={employeeId}
+          onChange={(e) => setEmployeeId(e.target.value)}
         />
-        {/* <button onClick={() => fetchEmployeeSkills(employeeId)}>Get Skills</button> */}
-        {employeeSkills.length > 0 && (
-          <div>
-            <h4>Skills for Employee ID: {employeeId}</h4>
-            <ul>
+        {employeeSkills.length > 0 ? (
+          <table>
+            <thead>
+              <tr>
+                <th>Skill</th>
+              </tr>
+            </thead>
+            <tbody>
               {employeeSkills.map((skill, index) => (
-                <li key={index}>{skill}</li>
+                <tr key={index}>
+                  <td>{skill}</td>
+                </tr>
               ))}
-            </ul>
-          </div>
+            </tbody>
+          </table>
+        ) : (
+          <p>No skills available for the selected employee.</p>
         )}
       </div>
-      <div>
+
+      <div className="create-employee-skill">
         <h3>Add Employee Skill</h3>
-        <input 
-          type="text" 
-          placeholder="Employee ID" 
-          value={employeeIdToAdd} 
-          onChange={(e) => setEmployeeIdToAdd(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="Skill ID" 
-          value={skillIdToAdd} 
-          onChange={(e) => setSkillIdToAdd(e.target.value)} 
-        />
-        <button onClick={handleAddEmployeeSkill}>Add Skill</button>
+        <div>
+          <input
+            type="text"
+            placeholder="Employee ID"
+            value={employeeIdToAdd}
+            onChange={(e) => setEmployeeIdToAdd(e.target.value)}
+          />
+          <br />
+          <input
+            type="text"
+            placeholder="Skill ID"
+            value={skillIdToAdd}
+            onChange={(e) => setSkillIdToAdd(e.target.value)}
+          />
+          <br />
+          <button onClick={handleAddEmployeeSkill}>Add Skill</button>
+        </div>
       </div>
-      <div>
+
+      <div className="update-employee-skill">
         <h3>Update Employee Skill</h3>
-        <input 
-          type="text" 
-          placeholder="Employee ID" 
-          value={employeeIdToUpdate} 
-          onChange={(e) => setEmployeeIdToUpdate(e.target.value)}  
-        />
-        <input 
-          type="text" 
-          placeholder="Current Skill ID" 
-          value={currentSkillId} 
-          onChange={(e) => setCurrentSkillId(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="New Skill ID" 
-          value={newSkillId} 
-          onChange={(e) => setNewSkillId(e.target.value)} 
-        />
-        <button onClick={handleUpdateEmployeeSkill}>Update Skill</button>
+        <div>
+          <input
+            type="text"
+            placeholder="Employee ID"
+            value={employeeIdToUpdate}
+            onChange={(e) => setEmployeeIdToUpdate(e.target.value)}
+          />
+          <br />
+          <input
+            type="text"
+            placeholder="Current Skill ID"
+            value={currentSkillId}
+            onChange={(e) => setCurrentSkillId(e.target.value)}
+          />
+          <br />
+          <input
+            type="text"
+            placeholder="New Skill ID"
+            value={newSkillId}
+            onChange={(e) => setNewSkillId(e.target.value)}
+          />
+          <br />
+          <button onClick={handleUpdateEmployeeSkill}>Update Skill</button>
+        </div>
       </div>
-      <div>
+
+      <div className="delete-employee-skill">
         <h3>Delete Employee Skill</h3>
-        <input 
-          type="text" 
-          placeholder="Employee ID" 
-          value={employeeIdToDelete} 
-          onChange={(e) => setEmployeeIdToDelete(e.target.value)} 
-        />
-        <input 
-          type="text" 
-          placeholder="Skill ID" 
-          value={skillIdToDelete} 
-          onChange={(e) => setSkillIdToDelete(e.target.value)} 
-        />
-        <button onClick={handleDeleteEmployeeSkill}>Delete Skill</button>
+        <div>
+          <input
+            type="text"
+            placeholder="Employee ID"
+            value={employeeIdToDelete}
+            onChange={(e) => setEmployeeIdToDelete(e.target.value)}
+          />
+          <br />
+          <input
+            type="text"
+            placeholder="Skill ID"
+            value={skillIdToDelete}
+            onChange={(e) => setSkillIdToDelete(e.target.value)}
+          />
+          <br />
+          <button onClick={handleDeleteEmployeeSkill}>Delete Skill</button>
+        </div>
       </div>
     </div>
   );

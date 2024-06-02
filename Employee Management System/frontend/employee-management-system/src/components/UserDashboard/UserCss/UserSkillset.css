@@ -1,0 +1,34 @@
+.user-skillset-container {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  
+  .skillsets-list {
+    width: 100%;
+  }
+  
+  .skillsets-list table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .skillsets-list th, .skillsets-list td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+  }
+  
+  .skillsets-list th {
+    background-color: #f2f2f2;
+  }
+  
+  .skillsets-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .skillsets-list tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  

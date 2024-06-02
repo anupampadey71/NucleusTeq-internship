@@ -1,0 +1,38 @@
+.admin-request-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.requests-list {
+    width: 100%;
+}
+
+.requests-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.requests-list th, .requests-list td {
+    border: 1px solid #dddddd; /* Add border to cells */
+    padding: 8px;
+}
+
+.requests-list th {
+    background-color: #f2f2f2;
+}
+
+.requests-list tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.requests-list tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.requests-list th, .requests-list td {
+    text-align: left; /* Align text to the left for better readability */
+}
+
+.requests-list td {
+    word-wrap: break-word; /* Ensure long text wraps within the cell */
+}

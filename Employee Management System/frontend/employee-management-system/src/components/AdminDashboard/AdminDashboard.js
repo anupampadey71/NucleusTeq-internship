@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Make sure you have `react-router-dom` installed
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import './AdminCss/AdminDashboard.css'; // Importing the CSS file for styling
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -11,37 +12,33 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div>
+    <div className="admin-dashboard-container">
       <h2>Admin Dashboard</h2>
-      <nav style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
-        <Link to="/admin/departments" style={{ margin: '0 10px', textDecoration: 'none' }}>
+      <nav className="admin-nav">
+        <Link to="/admin/departments" className="nav-link">
           Departments
         </Link>
-        <Link to="/admin/employees" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/admin/employees" className="nav-link">
           Employees
         </Link>
-        
-        <Link to="/admin/skillsets" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/admin/skillsets" className="nav-link">
           Skillsets
         </Link>
-        <Link to="/admin/managers" style={{ margin: '0 10px', textDecoration: 'none' }}>
-          Manager
+        <Link to="/admin/managers" className="nav-link">
+          Managers
         </Link>
-        <Link to="/admin/employeeskills" style={{ margin: '0 10px', textDecoration: 'none' }}>
-          EmployeeSkills
+        <Link to="/admin/employeeskills" className="nav-link">
+          Employee Skills
         </Link>
-        <Link to="/admin/projects" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/admin/projects" className="nav-link">
           Projects
         </Link>
-        <Link to="/admin/requests" style={{ margin: '0 10px', textDecoration: 'none' }}>
+        <Link to="/admin/requests" className="nav-link">
           Requests
         </Link>
-        <Link to="/admin/assignments" style={{ margin: '0 10px', textDecoration: 'none' }}>
-          Assignment
+        <Link to="/admin/assignments" className="nav-link">
+          Assignments
         </Link>
-        
-        
-        
       </nav>
     </div>
   );
