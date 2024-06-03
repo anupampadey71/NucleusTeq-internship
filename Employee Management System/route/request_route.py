@@ -1,8 +1,8 @@
 import logging
 import os
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from config.databases import sql, cursor
-from model.request_models import Register
+from model.request_models import Register, StatusEnum, UpdateRequestModel
 from schema.request_schema import list_serial
 from .auth_route import authenticate_user, Role
 
@@ -42,7 +42,7 @@ async def create_request(request: Register, current_user: dict = Depends(authent
         request_logger.warning("Unauthorized attempt to create request for project %s by user %s", request.projectId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only managers can create requests for their projects")
 
-    sql_query = "INSERT INTO request VALUES (%s, %s, %s, %s);"
+    sql_query = "INSERT INTO request (requestId, projectId, skillId, status) VALUES (%s, %s, %s, %s);"
     try:
         cursor.execute(sql_query, (request.requestId, request.projectId, request.skillId, request.status))
         sql.commit()
@@ -52,6 +52,7 @@ async def create_request(request: Register, current_user: dict = Depends(authent
         raise HTTPException(status_code=500, detail=str(e))
     
     return {"message": "Request added successfully"}
+
 
 @request_router.get("/all_requests")
 async def get_all_requests(current_user: dict = Depends(authenticate_user)):
@@ -88,7 +89,11 @@ async def get_all_requests(current_user: dict = Depends(authenticate_user)):
     return {"requests": requests}
 
 @request_router.put("/{requestId}")
-async def update_request(requestId: str, status: str, current_user: dict = Depends(authenticate_user)):
+async def update_request(
+    requestId: str,
+    status: StatusEnum = Query(..., description="The new status for the request"),
+    current_user: dict = Depends(authenticate_user)
+):
     """Update the status of a request."""
     # Retrieve projectId from the database using the requestId
     sql_query = "SELECT projectId FROM request WHERE requestId = %s;"
@@ -107,7 +112,7 @@ async def update_request(requestId: str, status: str, current_user: dict = Depen
     # Update request status in the database
     sql_query = "UPDATE request SET status = %s WHERE requestId = %s;"
     try:
-        cursor.execute(sql_query, (status, requestId))
+        cursor.execute(sql_query, (status.value, requestId))
         sql.commit()
         request_logger.info("Request %s updated successfully for project %s by user %s", requestId, projectId, current_user["username"])
     except Exception as e:
@@ -144,4 +149,3 @@ async def delete_request(requestId: str, current_user: dict = Depends(authentica
         raise HTTPException(status_code=500, detail=str(e))
     
     return {"message": "Request deleted successfully"}
-
