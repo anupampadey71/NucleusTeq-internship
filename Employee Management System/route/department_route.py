@@ -15,16 +15,13 @@ os.makedirs(log_dir, exist_ok=True)
 # Configure logging for department_route
 department_logger = logging.getLogger("department")
 department_logger.setLevel(logging.INFO)
-department_file_handler = logging.handlers.RotatingFileHandler(
-    os.path.join(log_dir, 'department.log'), maxBytes=1024 * 1024 * 10, backupCount=5
-)
-department_file_handler.setLevel(logging.INFO)
-department_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-department_file_handler.setFormatter(department_formatter)
-department_logger.addHandler(department_file_handler)
 
-# Ensure the logger is not adding multiple handlers
-if not department_logger.hasHandlers():
+# Check if the logger already has handlers to avoid duplicate handlers
+if not department_logger.handlers:
+    department_file_handler = logging.FileHandler(os.path.join(log_dir, 'department.log'))
+    department_file_handler.setLevel(logging.INFO)
+    department_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    department_file_handler.setFormatter(department_formatter)
     department_logger.addHandler(department_file_handler)
 
 

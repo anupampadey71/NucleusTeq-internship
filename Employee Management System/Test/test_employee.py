@@ -37,16 +37,40 @@ def test_enter_employee_details():
     assert response.status_code == 200
     assert response.json() == {"message": "Record added successfully"}
 
-def test_get_my_info():
+def test_admin_get_my_info():
     # Authenticate to get the token
     token = get_token("ADM001", "ADM001")
 
     # Make a GET request to get employee info with token
-    response = client.get("/employees/my_info?username=admin_user&password=admin_password")
+    response = client.get("/employees/my_info?username=ADM001&password=ADM001")
 
     # Assert that the response status code is 200
     assert response.status_code == 200
     print(response.json())
+
+def test_mangaer_get_my_info():
+    # Authenticate to get the token
+    token = get_token("MGR001", "MGR001")
+
+    # Make a GET request to get employee info with token
+    response = client.get("/employees/my_info?username=MGR001&password=MGR001")
+
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+    print(response.json())
+
+def test_mangaer_get_my_info():
+    # Authenticate to get the token
+    token = get_token("EMP001", "EMP001")
+
+    # Make a GET request to get employee info with token
+    response = client.get("/employees/my_info?username=EMP001&password=EMP001")
+
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+    print(response.json())
+
+
 
 def test_update_employee_details():
     # Define employee ID and updated details

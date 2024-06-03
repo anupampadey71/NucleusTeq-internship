@@ -17,13 +17,31 @@ def test_main():
     assert response.status_code == 200
     print(response.json())
 
-def test_login():
+def test_admin_login():
     response = client.post("/auth/login", data={"username": "ADM001", "password": "ADM001"})
     assert response.status_code == 200
     assert "token" in response.json()
     assert "username" in response.json()
     assert "role" in response.json()
     assert "password" in response.json()
+
+def test_manager_login():
+    response = client.post("/auth/login", data={"username": "MGR001", "password": "MGR001"})
+    assert response.status_code == 200
+    assert "token" in response.json()
+    assert "username" in response.json()
+    assert "role" in response.json()
+    assert "password" in response.json()
+
+
+def test_user_login():
+    response = client.post("/auth/login", data={"username": "EMP001", "password": "EMP001"})
+    assert response.status_code == 200
+    assert "token" in response.json()
+    assert "username" in response.json()
+    assert "role" in response.json()
+    assert "password" in response.json()
+
 
 def test_change_password():
     # Authenticate to get the token

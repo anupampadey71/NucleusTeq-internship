@@ -65,3 +65,43 @@ def test_delete_department():
     # Assert that the response status code is 200
     assert response.status_code == 200
     assert response.json() == {"message": "Record deleted successfully"}
+
+def test_admin_get_my_info():
+    # Authenticate to get the token
+    token = get_token("ADM001", "ADM001")
+
+    # Make a GET request to the my_info endpoint with the token
+    response = client.get("/departments/my_info", params={"username": "ADM001", "password": "ADM001"})
+
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+
+    # Print the response JSON for verification
+    print(response.json())
+
+def test_manager_get_my_info():
+    # Authenticate to get the token
+    token = get_token("ADM001", "ADM001")
+
+    # Make a GET request to the my_info endpoint with the token
+    response = client.get("/departments/my_info", params={"username": "MGR001", "password": "MGR001"})
+
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+
+    # Print the response JSON for verification
+    print(response.json())
+
+def test_user_get_my_info():
+    # Authenticate to get the token
+    token = get_token("ADM001", "ADM001")
+
+    # Make a GET request to the my_info endpoint with the token
+    response = client.get("/departments/my_info", params={"username": "EMP001", "password": "EMP001"})
+
+    # Assert that the response status code is 200
+    assert response.status_code == 200
+
+    # Print the response JSON for verification
+    print(response.json())
+

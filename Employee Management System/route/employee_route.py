@@ -16,16 +16,13 @@ os.makedirs(log_dir, exist_ok=True)
 # Configure logging for employee_route
 employee_logger = logging.getLogger("employee")
 employee_logger.setLevel(logging.INFO)
-employee_file_handler = logging.handlers.RotatingFileHandler(
-    os.path.join(log_dir, 'employee.log'), maxBytes=1024 * 1024 * 10, backupCount=5
-)
-employee_file_handler.setLevel(logging.INFO)
-employee_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-employee_file_handler.setFormatter(employee_formatter)
-employee_logger.addHandler(employee_file_handler)
 
-# Ensure the logger is not adding multiple handlers
-if not employee_logger.hasHandlers():
+# Check if the logger already has handlers to avoid duplicate handlers
+if not employee_logger.handlers:
+    employee_file_handler = logging.FileHandler(os.path.join(log_dir, 'employee.log'))
+    employee_file_handler.setLevel(logging.INFO)
+    employee_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    employee_file_handler.setFormatter(employee_formatter)
     employee_logger.addHandler(employee_file_handler)
 
 

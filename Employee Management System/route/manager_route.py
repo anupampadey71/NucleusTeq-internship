@@ -6,19 +6,19 @@ from model.manager_models import Register
 from schema.manager_schema import list_serial
 from .auth_route import authenticate_user, Role  # Assuming you have an auth_route with authentication logic
 
-# Create a log folder if it doesn't exist
-log_folder = "log"
-os.makedirs(log_folder, exist_ok=True)
-
 # Configure logging for manager_route
+log_dir = "log"
 manager_logger = logging.getLogger("manager")
 manager_logger.setLevel(logging.INFO)
-manager_file_handler = logging.handlers.RotatingFileHandler(
-    os.path.join(log_folder, 'manager.log'), maxBytes=1024 * 1024 * 10, backupCount=5)
-manager_file_handler.setLevel(logging.INFO)
-manager_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-manager_file_handler.setFormatter(manager_formatter)
-manager_logger.addHandler(manager_file_handler)
+
+# Check if the logger already has handlers to avoid duplicate handlers
+if not manager_logger.handlers:
+    manager_file_handler = logging.FileHandler(os.path.join(log_dir, 'manager.log'))
+    manager_file_handler.setLevel(logging.INFO)
+    manager_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    manager_file_handler.setFormatter(manager_formatter)
+    manager_logger.addHandler(manager_file_handler)
+
 
 manager_router = APIRouter()
 
@@ -39,7 +39,7 @@ async def add_manager(info: Register, current_user: dict = Depends(authenticate_
         sql_query = "INSERT INTO manager (managerId, employeeId) VALUES (%s, %s);"
         cursor.execute(sql_query, (info.managerId, info.employeeId))
         sql.commit()
-        manager_logger.info("Manager %s added successfully by user %s", info.managerId, current_user["username"])
+        manager_logger.info("Manager %s and employee %s added successfully by user %s", info.managerId,info.employeeId, current_user["username"])
         return {"message": "Manager added successfully"}
     except Exception as e:
         manager_logger.error("Error adding manager %s: %s", info.managerId, str(e))
@@ -129,7 +129,7 @@ async def update_manager(managerId: str, old_employeeId: str, new_employeeId: st
         sql_query = "UPDATE manager SET employeeId = %s WHERE managerId = %s AND employeeId = %s;"
         cursor.execute(sql_query, (new_employeeId, managerId, old_employeeId))
         sql.commit()
-        manager_logger.info("Updated manager %s by user %s", managerId, current_user["username"])
+        manager_logger.info("Updated manager %s, old_employeeId %s to new_employeeId %s by user %s", managerId,old_employeeId,new_employeeId, current_user["username"])
         return {"message": "Manager updated successfully"}
     except Exception as e:
         manager_logger.error("Error updating manager %s: %s", managerId, str(e))
@@ -152,7 +152,7 @@ async def delete_manager(managerId: str, employeeId: str, current_user: dict = D
         sql_query = "DELETE FROM manager WHERE managerId = %s AND employeeId = %s;"
         cursor.execute(sql_query, (managerId, employeeId))
         sql.commit()
-        manager_logger.info("Deleted manager %s by user %s", managerId, current_user["username"])
+        manager_logger.info("Deleted manager %s and employee %s by user %s", managerId,employeeId, current_user["username"])
         return {"message": "Manager deleted successfully"}
     except Exception as e:
         manager_logger.error("Error deleting manager %s: %s", managerId, str(e))
