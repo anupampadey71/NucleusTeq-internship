@@ -10,69 +10,126 @@ client = TestClient(app)
 # Function to get authentication token
 def get_token(username, password):
     response = client.post("/auth/login", data={"username": username, "password": password})
-    return response.json()["token"]
+    response_data = response.json()
+    if response.status_code == 200 and "token" in response_data:
+        return response_data["token"]
+    else:
+        print(f"Error obtaining token for {username}: {response_data}")
+        return None
 
-def test_create_employee_skill():
+def test_user_create_employee_skill():
     """Tests creating a new employee skill association"""
-    # Define data for the employee skill association
     data = {
         "employeeId": "EMP001",
         "skillId": "SKILL004"
     }
 
-    # Authenticate to get the token
     token = get_token("EMP001", "EMP001")
+    assert token is not None
 
-    # Send POST request to create employee skill association
     response = client.post("/employeeskill/", 
                            params={"username": "EMP001", "password": "EMP001"},
                            json=data,
                            headers={"Authorization": f"Bearer {token}", "accept": "application/json", "Content-Type": "application/json"})
 
-    # Assert successful creation
     assert response.status_code == 200
     assert response.json() == {"message": "Employee skill association added successfully"}
 
+def test_admin_create_employee_skill():
+    """Tests creating a new employee skill association"""
+    data = {
+        "employeeId": "EMP001",
+        "skillId": "SKILL005"
+    }
 
-def test_update_employee_skill():
+    token = get_token("ADM001", "ADM001")
+    assert token is not None
+
+    response = client.post("/employeeskill/", 
+                           params={"username": "ADM001", "password": "ADM001"},
+                           json=data,
+                           headers={"Authorization": f"Bearer {token}", "accept": "application/json", "Content-Type": "application/json"})
+
+    assert response.status_code == 200
+    assert response.json() == {"message": "Employee skill association added successfully"}
+
+def test_user_update_employee_skill():
     """Tests updating an employee's skill"""
-    # Authenticate to get the token
     token = get_token("EMP001", "EMP001")
+    assert token is not None
 
-    # Send PUT request to update employee skill
     response = client.put("/employeeskill/", 
-                          params={"employee_id": "EMP001", "current_skill_id": "SKILL004", "new_skill_id": "SKILL004", "username": "EMP001", "password": "EMP001"},
+                          params={"employee_id": "EMP001", "current_skill_id": "SKILL004", "new_skill_id": "SKILL006", "username": "EMP001", "password": "EMP001"},
                           headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
-    # Assert successful update
     assert response.status_code == 200
     assert response.json() == {"message": "Employee skill association updated successfully for employee EMP001"}
 
+def test_admin_update_employee_skill():
+    """Tests updating an employee's skill"""
+    token = get_token("ADM001", "ADM001")
+    assert token is not None
 
-def test_get_employee_skills():
+    response = client.put("/employeeskill/", 
+                          params={"employee_id": "EMP001", "current_skill_id": "SKILL006", "new_skill_id": "SKILL004", "username": "ADM001", "password": "ADM001"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    assert response.status_code == 200
+    assert response.json() == {"message": "Employee skill association updated successfully for employee EMP001"}
+
+def test_user_get_employee_skills():
     """Tests retrieving skills of a specific employee"""
-    # Authenticate to get the token
     token = get_token("EMP001", "EMP001")
+    assert token is not None
 
-    # Send GET request to retrieve skills of the employee
     response = client.get("/employeeskill/EMP001", 
                           params={"username": "EMP001", "password": "EMP001"},
                           headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
-    # Assert successful retrieval
     assert response.status_code == 200
 
+def test_manager_get_employee_skills():
+    """Tests retrieving skills of a specific employee"""
+    token = get_token("MGR001", "MGR001")
+    assert token is not None
 
-def test_delete_employee_skill():
+    response = client.get("/employeeskill/EMP001", 
+                          params={"username": "MGR001", "password": "MGR001"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    assert response.status_code == 200
+
+def test_admin_get_employee_skills():
+    """Tests retrieving skills of a specific employee"""
+    token = get_token("ADM001", "ADM001")
+    assert token is not None
+
+    response = client.get("/employeeskill/EMP001", 
+                          params={"username": "ADM001", "password": "ADM001"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    assert response.status_code == 200
+
+def test_user_delete_employee_skill():
     """Tests deleting an employee's skill"""
-    # Authenticate to get the token
     token = get_token("EMP001", "EMP001")
+    assert token is not None
 
-    # Send DELETE request to delete the employee's skill
-    response = client.delete("/employeeskill/EMP001/SKILL004", 
+    response = client.delete("/employeeskill/EMP001/SKILL005", 
                              params={"username": "EMP001", "password": "EMP001"},
                              headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
-    # Assert successful deletion
+    assert response.status_code == 200
+    assert response.json() == {"message": "Employee skill association deleted successfully"}
+
+def test_admin_delete_employee_skill():
+    """Tests deleting an employee's skill"""
+    token = get_token("ADM001", "ADM001")
+    assert token is not None
+
+    response = client.delete("/employeeskill/EMP001/SKILL004", 
+                             params={"username": "ADM001", "password": "ADM001"},
+                             headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
     assert response.status_code == 200
     assert response.json() == {"message": "Employee skill association deleted successfully"}

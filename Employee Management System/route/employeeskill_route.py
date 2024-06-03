@@ -42,7 +42,7 @@ async def create_employee_skill(info: Register, current_user: dict = Depends(aut
     try:
         cursor.execute(sql_query, (info.employeeId, info.skillId))
         sql.commit()
-        employeeskill_logger.info("Employee skill association added successfully by user %s", current_user["username"])
+        employeeskill_logger.info("Employee %s and skill %s association added successfully by user %s",info.employeeId,info.skillId, current_user["username"])
     except Exception as e:
         sql.rollback()
         employeeskill_logger.error("Error adding employee skill: %s", str(e))
@@ -91,7 +91,7 @@ async def update_employee_skill(employee_id: str = Query(..., description="Emplo
     try:
         cursor.execute(sql_query, (new_skill_id, employee_id, current_skill_id))
         sql.commit()
-        employeeskill_logger.info("Employee skill association updated successfully for employee %s by user %s", employee_id, current_user["username"])
+        employeeskill_logger.info("Employee skill association updated successfully for employee %s, old_skill %s, new_skill %s by user %s", employee_id,current_skill_id,new_skill_id, current_user["username"])
     except Exception as e:
         sql.rollback()
         employeeskill_logger.error("Error updating employee skill: %s", str(e))
@@ -114,7 +114,7 @@ async def delete_employee_skill(employeeId: str, skillId: str, current_user: dic
     try:
         cursor.execute(sql_query, (employeeId, skillId))
         sql.commit()
-        employeeskill_logger.info("Employee skill association deleted successfully for employee %s by user %s", employeeId, current_user["username"])
+        employeeskill_logger.info("Employee skill association deleted successfully for employee %s and skillId %s by user %s", employeeId,skillId, current_user["username"])
     except Exception as e:
         sql.rollback()
         employeeskill_logger.error("Error deleting employee skill: %s", str(e))

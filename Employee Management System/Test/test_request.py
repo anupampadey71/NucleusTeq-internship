@@ -37,7 +37,21 @@ def test_create_request():
     assert response.json() == {"message": "Request added successfully"}
 
 
-def test_get_all_requests():
+def test_admin_get_all_requests():
+    """Tests retrieving all requests"""
+    # Authenticate to get the token
+    token = get_token("ADM001", "ADM001")
+
+    # Send GET request to retrieve all requests
+    response = client.get("/request/all_requests", 
+                          params={"username": "ADM001", "password": "ADM001"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    # Assert successful retrieval
+    assert response.status_code == 200
+    assert "requests" in response.json()
+
+def test_manager_get_all_requests():
     """Tests retrieving all requests"""
     # Authenticate to get the token
     token = get_token("MGR001", "MGR001")
