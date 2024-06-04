@@ -30,10 +30,13 @@ async def create_project(project: Register, current_user: dict = Depends(authent
         project_logger.warning("Unauthorized attempt to create project by user %s", current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can create projects")
 
-    # Check if the managerId matches the current user's username
-    if current_user["role"] == Role.manager and project.managerId != current_user["username"]:
-        project_logger.warning("Manager %s tried to create project for another manager %s", current_user["username"], project.managerId)
-        raise HTTPException(status_code=403, detail="You are only allowed to create projects for yourself")
+    # Check if the managerId exists in the employee table
+    sql_query_check_manager = "SELECT employeeId FROM employee WHERE employeeId = %s;"
+    cursor.execute(sql_query_check_manager, (project.managerId,))
+    manager = cursor.fetchone()
+    if not manager:
+        project_logger.warning("Attempt to create project with non-existing managerId %s by user %s", project.managerId, current_user["username"])
+        raise HTTPException(status_code=400, detail="managerId does not exist")
 
     sql_query = "INSERT INTO project (projectId, name, description, managerId) VALUES (%s, %s, %s, %s);"
     try:
@@ -44,7 +47,6 @@ async def create_project(project: Register, current_user: dict = Depends(authent
     except Exception as e:
         project_logger.error("Error creating project %s: %s", project.projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @project_router.get("/all_projects")
 async def get_all_projects(current_user: dict = Depends(authenticate_user)):
@@ -63,7 +65,6 @@ async def get_all_projects(current_user: dict = Depends(authenticate_user)):
         project_logger.error("Error retrieving all projects: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
 
-
 @project_router.put("/{projectId}")
 async def update_project(projectId: str, project: UpdateProject, current_user: dict = Depends(authenticate_user)):
     # Check if the user is admin or manager
@@ -71,10 +72,13 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
         project_logger.warning("Unauthorized attempt to update project %s by user %s", projectId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can update projects")
 
-    # Check if the managerId matches the current user's username
-    if current_user["role"] == Role.manager and project.managerId != current_user["username"]:
-        project_logger.warning("Manager %s tried to update project %s for another manager %s", current_user["username"], projectId, project.managerId)
-        raise HTTPException(status_code=403, detail="You are only allowed to update projects for yourself")
+    # Check if the managerId exists in the employee table
+    sql_query_check_manager = "SELECT employeeId FROM employee WHERE employeeId = %s;"
+    cursor.execute(sql_query_check_manager, (project.managerId,))
+    manager = cursor.fetchone()
+    if not manager:
+        project_logger.warning("Attempt to update project with non-existing managerId %s by user %s", project.managerId, current_user["username"])
+        raise HTTPException(status_code=400, detail="managerId does not exist")
 
     # Check if the projectId exists and if the managerId matches the current user's username
     sql_query_check = "SELECT managerId FROM project WHERE projectId = %s;"
@@ -100,7 +104,6 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
     except Exception as e:
         project_logger.error("Error updating project %s: %s", projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @project_router.delete("/{projectId}")
 async def delete_project(projectId: str, current_user: dict = Depends(authenticate_user)):

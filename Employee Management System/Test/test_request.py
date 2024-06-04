@@ -73,7 +73,7 @@ def test_update_request():
 
     # Send PUT request to update request
     response = client.put("/request/REQ007", 
-                          params={"status": "Closed", "username": "MGR001", "password": "MGR001"},
+                          params={"status": "Close", "username": "MGR001", "password": "MGR001"},
                           headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
 
     # Assert successful update

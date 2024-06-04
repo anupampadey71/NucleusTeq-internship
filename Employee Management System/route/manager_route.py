@@ -19,7 +19,6 @@ if not manager_logger.handlers:
     manager_file_handler.setFormatter(manager_formatter)
     manager_logger.addHandler(manager_file_handler)
 
-
 manager_router = APIRouter()
 
 @manager_router.post("/")
@@ -35,6 +34,13 @@ async def add_manager(info: Register, current_user: dict = Depends(authenticate_
         if current_user["role"] == Role.manager and info.managerId != current_user["username"]:
             manager_logger.warning("Manager %s attempted to add another manager %s", current_user["username"], info.managerId)
             raise HTTPException(status_code=403, detail="Managers can only add themselves as managers")
+
+        # Check if the provided managerId exists in the employee table
+        sql_query = "SELECT COUNT(*) FROM employee WHERE employeeId = %s;"
+        cursor.execute(sql_query, (info.managerId,))
+        result = cursor.fetchone()
+        if result[0] == 0:
+            raise HTTPException(status_code=404, detail="ManagerId does not exist in the employee table")
 
         sql_query = "INSERT INTO manager (managerId, employeeId) VALUES (%s, %s);"
         cursor.execute(sql_query, (info.managerId, info.employeeId))
