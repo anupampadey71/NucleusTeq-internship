@@ -2,7 +2,7 @@ import logging
 import os
 from fastapi import APIRouter, HTTPException, Depends
 from config.databases import sql, cursor
-from model.assignment_models import Register, create_assignment
+from model.assignment_models import create_assignment 
 from schema.assignment_schema import list_serial
 from .auth_route import authenticate_user, Role
 
