@@ -40,6 +40,8 @@ async def enter_employee_details(info: Register, current_user: dict = Depends(au
         user_role = "user"
     elif info.employeeId.startswith("MGR"):
         user_role = "manager"
+    elif info.employeeId.startswith("ADM"):
+        user_role = "admin"
     else:
         employee_logger.warning("Invalid employeeId prefix: %s", info.employeeId)
         raise HTTPException(status_code=400, detail="Invalid employeeId prefix")
@@ -60,7 +62,6 @@ async def enter_employee_details(info: Register, current_user: dict = Depends(au
         raise HTTPException(status_code=500, detail=f"Error adding employee: {str(e)}")
 
     return {"message": "Record added successfully"}
-
 
 @employee_router.get("/my_info")
 async def my_info(current_user: dict = Depends(authenticate_user)):

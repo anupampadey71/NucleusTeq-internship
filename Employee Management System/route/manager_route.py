@@ -132,6 +132,10 @@ async def update_manager(managerId: str, old_employeeId: str, new_employeeId: st
             manager_logger.warning("Manager %s attempted to update another manager %s", current_user["username"], managerId)
             raise HTTPException(status_code=403, detail="Managers can only update their own manager records")
 
+        # Validate new_employeeId
+        if not new_employeeId.startswith("EMP"):
+            raise HTTPException(status_code=400, detail="New Employee ID must start with 'EMP'")
+
         sql_query = "UPDATE manager SET employeeId = %s WHERE managerId = %s AND employeeId = %s;"
         cursor.execute(sql_query, (new_employeeId, managerId, old_employeeId))
         sql.commit()
