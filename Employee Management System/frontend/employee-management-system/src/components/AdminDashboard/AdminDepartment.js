@@ -69,8 +69,8 @@ const AdminDepartment = () => {
   };
 
   const handleCreateChange = (e) => {
-    const { name, value } = e.target;
-    setCreateInfo({ ...createInfo, [name]: value });
+    const { name, value } = e.target; //variable //event 
+    setCreateInfo({ ...createInfo, [name]: value }); //update function
   };
 
   const handleUpdateChange = (e) => {
