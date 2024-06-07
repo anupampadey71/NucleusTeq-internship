@@ -80,7 +80,6 @@ def test_update_employee_details():
         "name": "rashmi Tiwari",
         "salary": 200000,
         "role": "Senior Software Engineer",
-        "is_assigned": True
     }
 
     # Authenticate to get the token
