@@ -7,7 +7,7 @@ const AdminEmployee = () => {
   const { user } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [employeeInfo, setEmployeeInfo] = useState({ employeeId: '', email: '', name: '', salary: '', role: '' });
-  const [updateEmployeeInfo, setUpdateEmployeeInfo] = useState({ employeeId: '', email: '', name: '', salary: '', role: '', is_assigned: false });
+  const [updateEmployeeInfo, setUpdateEmployeeInfo] = useState({ employeeId: '', email: '', name: '', salary: '', role: '' });
   const [deleteEmployeeId, setDeleteEmployeeId] = useState('');
 
   useEffect(() => {
@@ -49,11 +49,10 @@ const AdminEmployee = () => {
         updateEmployeeInfo.name, 
         updateEmployeeInfo.salary, 
         updateEmployeeInfo.role, 
-        updateEmployeeInfo.is_assigned,
         user
       );
       fetchEmployees();
-      setUpdateEmployeeInfo({ employeeId: '', email: '', name: '', salary: '', role: '', is_assigned: false });
+      setUpdateEmployeeInfo({ employeeId: '', email: '', name: '', salary: '', role: '' });
     } catch (error) {
       console.error('Failed to update employee:', error.response ? error.response.data : error.message);
       alert('Failed to update employee. Please try again.');
@@ -118,7 +117,7 @@ const AdminEmployee = () => {
           <p>No employees available.</p>
         )}
       </div>
-  
+
       <div className="create-employee">
         <h3>Add Employee</h3>
         <div>
@@ -135,7 +134,7 @@ const AdminEmployee = () => {
           <button onClick={handleAddEmployee}>Add Employee</button>
         </div>
       </div>
-  
+
       <div className="update-employee">
         <h3>Update Employee</h3>
         <div>
@@ -149,15 +148,10 @@ const AdminEmployee = () => {
           <br />
           <input type="text" placeholder="Role" value={updateEmployeeInfo.role} onChange={handleUpdateEmployeeChange} name="role" />
           <br />
-          <label>
-            Assigned:
-            <input type="checkbox" checked={updateEmployeeInfo.is_assigned} onChange={(e) => setUpdateEmployeeInfo({ ...updateEmployeeInfo, is_assigned: e.target.checked })} name="is_assigned" />
-          </label>
-          <br />
           <button onClick={handleUpdateEmployee}>Update Employee</button>
         </div>
       </div>
-  
+
       <div className="delete-employee">
         <h3>Delete Employee</h3>
         <div>
@@ -168,7 +162,6 @@ const AdminEmployee = () => {
       </div>
     </div>
   );
-  
 };
 
 export default AdminEmployee;
