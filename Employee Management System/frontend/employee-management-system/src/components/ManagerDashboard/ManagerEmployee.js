@@ -43,7 +43,7 @@ const ManagerEmployee = () => {
                   <td>{emp.name}</td>
                   <td>{emp.salary}</td>
                   <td>{emp.role}</td>
-                  <td>{emp.is_assigned ? 'Yes' : 'No'}</td>
+                  <td>{emp.is_assigned ? 'Assigned' : 'Not Assigned'}</td>
                 </tr>
               ))}
             </tbody>

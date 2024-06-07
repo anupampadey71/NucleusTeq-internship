@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getEmployees } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
-import './UserCss/UserEmployee.css'
+
+
 
 const UserEmployee = () => {
   const { user } = useAuth();
@@ -44,7 +45,7 @@ const UserEmployee = () => {
                   <td>{emp.name}</td>
                   <td>{emp.salary}</td>
                   <td>{emp.role}</td>
-                  <td>{emp.is_assigned ? 'Yes' : 'No'}</td>
+                  <td>{emp.is_assigned ?  'Assigned' : 'Not Assigned'}</td>
                 </tr>
               ))}
             </tbody>
