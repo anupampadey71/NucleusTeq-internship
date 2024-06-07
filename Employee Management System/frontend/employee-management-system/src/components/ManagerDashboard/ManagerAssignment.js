@@ -44,7 +44,7 @@ const ManagerAssignment = () => {
                   <td>{assignment.requestId}</td>
                   <td>{assignment.employeeId}</td>
                   <td>{assignment.projectId}</td>
-                  <td>{assignment.assigned ? 'Yes' : 'No'}</td>
+                  <td>{assignment.assigned ? 'Assigned' : 'Not Assigned'}</td>
                 </tr>
               ))}
             </tbody>
