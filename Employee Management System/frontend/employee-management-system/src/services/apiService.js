@@ -79,13 +79,12 @@ export const addEmployee = (employeeId, email, name, salary, role, user) => {
 };
 
 // Function to update an employee
-export const updateEmployee = (employeeId, email, name, salary, role, is_assigned, user) => {
+export const updateEmployee = (employeeId, email, name, salary, role, user) => {
   return api.put(`/employees/${employeeId}`, {
     email,
     name,
     salary,
     role,
-    is_assigned,
   }, {
     headers: { Authorization: `Bearer ${user.token}` },
     params: { username: user.username, password: user.password },

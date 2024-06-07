@@ -90,11 +90,11 @@ async def update_employee_details(employeeId: str, info: UpdateEmployeeDetails, 
 
     sql_query = """
     UPDATE employee 
-    SET email = %s, name = %s, salary = %s, role = %s, is_assigned = %s
+    SET email = %s, name = %s, salary = %s, role = %s
     WHERE employeeId = %s;
     """
     try:
-        cursor.execute(sql_query, (info.email, info.name, info.salary, info.role, info.is_assigned, employeeId))
+        cursor.execute(sql_query, (info.email, info.name, info.salary, info.role, employeeId))
         sql.commit()
         employee_logger.info("Employee %s updated successfully by user %s", employeeId, current_user["username"])
     except Exception as e:

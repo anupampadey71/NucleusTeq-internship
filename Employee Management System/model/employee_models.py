@@ -36,7 +36,6 @@ class UpdateEmployeeDetails(BaseModel):
     name: str
     salary: int
     role: str 
-    is_assigned: bool 
 
     @validator('email')
     def validate_update_email(cls, value):
