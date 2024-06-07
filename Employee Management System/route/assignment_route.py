@@ -107,6 +107,13 @@ async def update_assignment(assignmentId: str, assigned: bool, current_user: dic
 
         cursor.execute("UPDATE assignment SET assigned = %s WHERE assignmentId = %s;", (assigned, assignmentId))
         cursor.execute("UPDATE employee SET is_assigned = %s WHERE employeeId = (SELECT employeeId FROM assignment WHERE assignmentId = %s);", (assigned, assignmentId))
+        
+        # If the assignment is marked as assigned, update the request status to 'Close'
+        if assigned:
+            cursor.execute("UPDATE request SET status = 'Close' WHERE requestId = (SELECT requestId FROM assignment WHERE assignmentId = %s);", (assignmentId,))
+        else:
+            cursor.execute("UPDATE request SET status = 'Open' WHERE requestId = (SELECT requestId FROM assignment WHERE assignmentId = %s);", (assignmentId,))
+        
         sql.commit()
         assignment_logger.info("Assignment %s updated successfully by user %s", assignmentId, current_user["username"])
         return {"message": "Assignment status updated successfully"}
