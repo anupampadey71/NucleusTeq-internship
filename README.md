@@ -86,8 +86,8 @@ CREATE TABLE project (
     managerId VARCHAR(255),
     FOREIGN KEY (managerId) REFERENCES employee(employeeId)
 );
-
-##Running the application
+```
+## running the application 
 1. for running frontend
    ```bash
     cd NucleusTeq-internship/Employee Management System/frontend/employee-management-system
@@ -99,7 +99,7 @@ CREATE TABLE project (
     uvicorn main:app --reload
     ```
 
-##Testing the application
+## Testing the application
 1. Ensure the backend server is running.
 2. Navigate to the test directory and run your tests using pytest:
    ```bash
