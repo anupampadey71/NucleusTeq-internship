@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDepartments } from '../../services/apiService'; // Adjusted import path
 import { useAuth } from '../../context/AuthContext';
+import './ManagerCss/ManagerDepartment.css';
 
 const ManagerDepartment = () => {
   const { user } = useAuth();

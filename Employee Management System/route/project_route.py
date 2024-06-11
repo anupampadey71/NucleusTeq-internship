@@ -30,6 +30,11 @@ async def create_project(project: Register, current_user: dict = Depends(authent
         project_logger.warning("Unauthorized attempt to create project by user %s", current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can create projects")
 
+    # If the user is a manager, ensure the managerId matches their username
+    if current_user["role"] == Role.manager and project.managerId != current_user["username"]:
+        project_logger.warning("Manager %s tried to create a project with managerId %s", current_user["username"], project.managerId)
+        raise HTTPException(status_code=403, detail="Managers can only create projects for themselves")
+
     # Check if the managerId exists in the employee table
     sql_query_check_manager = "SELECT employeeId FROM employee WHERE employeeId = %s;"
     cursor.execute(sql_query_check_manager, (project.managerId,))
@@ -72,6 +77,11 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
         project_logger.warning("Unauthorized attempt to update project %s by user %s", projectId, current_user["username"])
         raise HTTPException(status_code=403, detail="Only admin or manager can update projects")
 
+    # If the user is a manager, ensure the managerId matches their username
+    if current_user["role"] == Role.manager and project.managerId != current_user["username"]:
+        project_logger.warning("Manager %s tried to update a project with managerId %s", current_user["username"], project.managerId)
+        raise HTTPException(status_code=403, detail="Managers can only update projects for themselves")
+
     # Check if the managerId exists in the employee table
     sql_query_check_manager = "SELECT employeeId FROM employee WHERE employeeId = %s;"
     cursor.execute(sql_query_check_manager, (project.managerId,))
@@ -80,7 +90,7 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
         project_logger.warning("Attempt to update project with non-existing managerId %s by user %s", project.managerId, current_user["username"])
         raise HTTPException(status_code=400, detail="managerId does not exist")
 
-    # Check if the projectId exists and if the managerId matches the current user's username
+    # Check if the projectId exists
     sql_query_check = "SELECT managerId FROM project WHERE projectId = %s;"
     try:
         cursor.execute(sql_query_check, (projectId,))
@@ -88,9 +98,6 @@ async def update_project(projectId: str, project: UpdateProject, current_user: d
         if not result:
             project_logger.warning("Project %s not found for update by user %s", projectId, current_user["username"])
             raise HTTPException(status_code=404, detail="Project not found")
-        elif current_user["role"] == Role.manager and result[0] != current_user["username"]:
-            project_logger.warning("Manager %s tried to update project %s which is not assigned to them", current_user["username"], projectId)
-            raise HTTPException(status_code=403, detail="You are only allowed to update your own projects")
     except Exception as e:
         project_logger.error("Error checking project %s for update: %s", projectId, str(e))
         raise HTTPException(status_code=500, detail=str(e))

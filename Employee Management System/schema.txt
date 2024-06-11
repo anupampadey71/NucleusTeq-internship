@@ -1,0 +1,81 @@
+CREATE SCHEMA IF NOT EXISTS EmployeeManagement;  -- Create schema if it doesn't exist
+
+USE EmployeeManagement;  -- Use the newly created schema
+
+-- Create Employee table
+CREATE TABLE Employee (
+  employeeId VARCHAR(10) PRIMARY KEY,
+  email VARCHAR(50) NOT NULL,
+  name VARCHAR(50) NOT NULL,
+  salary DECIMAL(10,2) NOT NULL,
+  role VARCHAR(50) NOT NULL
+  is_assigned TINYINT(1) DEFAULT 0
+);
+
+-- Create Project table
+CREATE TABLE Project (
+  projectId VARCHAR(10) PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT NOT NULL,
+  managerId VARCHAR(6)  -- managerId column without foreign key
+);
+
+-- Create Manager table (already has the correct foreign key constraint)
+CREATE TABLE Manager (
+  managerId VARCHAR(10),
+  employeeId VARCHAR(10),
+  PRIMARY KEY (managerId, employeeId),  -- Composite primary key
+  FOREIGN KEY (employeeId) REFERENCES Employee(employeeId)
+);
+
+-- Create Department table
+CREATE TABLE Department (
+  departmentId VARCHAR(10) PRIMARY KEY,
+  name VARCHAR(50) NOT NULL,
+  managerId VARCHAR(10)  -- managerId column without foreign key
+);
+
+-- Create SkillSet table
+CREATE TABLE SkillSet (
+  skillId VARCHAR(10) PRIMARY KEY,
+  skillName VARCHAR(50) NOT NULL
+);
+
+-- Create EmployeeSkill table (composite primary key)
+CREATE TABLE EmployeeSkill (
+  employeeId VARCHAR(10),
+  skillId VARCHAR(10),
+  PRIMARY KEY (employeeId, skillId),  -- Define composite primary key
+  FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
+  FOREIGN KEY (skillId) REFERENCES SkillSet(skillId)
+);
+
+-- Create Request table
+CREATE TABLE Request (
+  requestId VARCHAR(10) PRIMARY KEY,
+  projectId VARCHAR(10) FOREIGN KEY REFERENCES Project(projectId),
+  skillId VARCHAR(10) FOREIGN KEY REFERENCES SkillSet(skillId),
+  status VARCHAR(20) NOT NULL
+);
+
+-- Create Assignment table
+CREATE TABLE Assignment (
+  assignmentId VARCHAR(10) PRIMARY KEY,
+  requestId VARCHAR(10) NOT NULL,
+  employeeId VARCHAR(10),
+  projectId VARCHAR(10),
+  assigned TINYINT(1) DEFAULT 0,  -- default value 0
+  FOREIGN KEY (requestId) REFERENCES Request(requestId),
+  FOREIGN KEY (employeeId) REFERENCES Employee(employeeId),
+  FOREIGN KEY (projectId) REFERENCES Project(projectId)
+);
+
+-- Create User table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password_hash CHAR(64) NOT NULL,  -- SHA-256 hashed password
+    role ENUM('admin', 'manager', 'user') NOT NULL
+);
+
+
