@@ -69,6 +69,9 @@ async def update_name(departmentId: str, name: str, current_user: dict = Depends
     sql_query = "UPDATE department SET name = %s WHERE departmentId = %s;"
     try:
         cursor.execute(sql_query, (name, departmentId))
+        if cursor.rowcount == 0:
+            department_logger.warning("Department %s not found for update by user %s", departmentId, current_user["username"])
+            raise HTTPException(status_code=404, detail="Department not found")
         sql.commit()
         department_logger.info("Department %s updated to %s by user %s", departmentId, name, current_user["username"])
     except Exception as e:
@@ -86,6 +89,9 @@ async def delete_record(departmentId: str = Query(..., description="Department I
     sql_query = "DELETE FROM department WHERE departmentId = %s;"
     try:
         cursor.execute(sql_query, (departmentId,))
+        if cursor.rowcount == 0:
+            department_logger.warning("Department %s not found for deletion by user %s", departmentId, current_user["username"])
+            raise HTTPException(status_code=404, detail="Department not found")
         sql.commit()
         department_logger.info("Department %s deleted by user %s", departmentId, current_user["username"])
     except Exception as e:

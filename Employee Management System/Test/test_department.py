@@ -104,4 +104,3 @@ def test_user_get_my_info():
 
     # Print the response JSON for verification
     print(response.json())
-
