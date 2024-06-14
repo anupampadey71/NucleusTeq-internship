@@ -31,7 +31,7 @@ def test_enter_employee_details():
     token = get_token("ADM001", "ADM001")
 
     # Make a POST request to the endpoint with the provided data and token
-    response = client.post(f"/employees/?username=admin_user&password=admin_password", json=data)
+    response = client.post(f"/employees/?username=ADM001&password=ADM001", json=data)
     
     # Assert that the response status code is 200
     assert response.status_code == 200
@@ -59,7 +59,7 @@ def test_mangaer_get_my_info():
     assert response.status_code == 200
     print(response.json())
 
-def test_mangaer_get_my_info():
+def test_employee_get_my_info():
     # Authenticate to get the token
     token = get_token("EMP001", "EMP001")
 
@@ -86,7 +86,7 @@ def test_update_employee_details():
     token = get_token("ADM001", "ADM001")
 
     # Make a PUT request to update the employee details with token
-    response = client.put(f"/employees/{employee_id}?username=admin_user&password=admin_password", json=updated_details)
+    response = client.put(f"/employees/{employee_id}?username=ADM001&password=ADM001", json=updated_details)
 
     # Assert that the response status code is 200
     assert response.status_code == 200
@@ -100,8 +100,63 @@ def test_delete_employee():
     token = get_token("ADM001", "ADM001")
 
     # Make a DELETE request to delete the employee record with token
-    response = client.delete(f"/employees/?employeeId={employee_id}&username=admin_user&password=admin_password")
+    response = client.delete(f"/employees/?employeeId={employee_id}&username=ADM001&password=ADM001")
 
     # Assert that the response status code is 200
     assert response.status_code == 200
     assert response.json() == {"message": "Record deleted successfully"}
+
+#negative test cases 
+def test_negative_enter_employee_details():
+    # Define the data for the employee details
+    data = {
+        "employeeId": "EMP008",
+        "email": "rashmi.pandey@company.com",
+        "name": "rashmi pandey",
+        "salary": 100000,
+        "role": "Software Engineer"
+    }
+
+    # Authenticate to get the token
+    token = get_token("EMP001", "EMP001")
+
+    # Make a POST request to the endpoint with the provided data and token
+    response = client.post(f"/employees/?username=EMP001&password=EMP001", json=data)
+    
+    # Assert that the response status code is 403
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Only admin can add new employees"}
+
+def test_negative_delete_employee():
+    # Define employee ID to be deleted
+    employee_id = "EMP006"
+
+    # Authenticate to get the token
+    token = get_token("EMP001", "EMP001")
+
+    # Make a DELETE request to delete the employee record with token
+    response = client.delete(f"/employees/?employeeId={employee_id}&username=EMP001&password=EMP001")
+
+    # Assert that the response status code is 200
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Only admin can delete employee records"}
+
+def test_negative_update_employee_details():
+    # Define employee ID and updated details
+    employee_id = "EMP006"
+    updated_details = {
+        "email": "rashmi.tiwari@company.com",
+        "name": "rashmi Tiwari",
+        "salary": 200000,
+        "role": "Senior Software Engineer",
+    }
+
+    # Authenticate to get the token
+    token = get_token("EMP006", "EMP006")
+
+    # Make a PUT request to update the employee details with token
+    response = client.put(f"/employees/{employee_id}?username=EMP006&password=EMP006", json=updated_details)
+
+    # Assert that the response status code is 403
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Only admin can update employee details"}
