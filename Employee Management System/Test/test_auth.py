@@ -55,4 +55,24 @@ def test_change_password():
     assert response.status_code == 200
     assert response.json() == {"message": "Password updated successfully"}
 
+#negative testcase
+def test_negative_user_login():
+    response = client.post("/auth/login", data={"username": "EMP001", "password": "abcdefg"})
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid username or password"}
+
+
+def test_negative_change_password():
+    # Authenticate to get the token
+    token = get_token("EMP003", "EMP003")
+
+    # Make a PUT request to change the password
+    response = client.put("/auth/change-password", 
+                           data={"username": "EMP003", "old_password": "Final", "new_password": "password"})
+    
+    # Assert that the response status code is 401
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Invalid username or old password"}
+    
+
 

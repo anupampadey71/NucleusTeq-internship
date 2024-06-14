@@ -106,4 +106,9 @@ CREATE TABLE project (
     cd NucleusTeq-internship/Employee Management System/Test
     pytest test_nameoftestfile.py
     ```
-
+3. To generate a test coverage report, run the following command:
+   ```bash
+    cd NucleusTeq-internship/Employee Management System/Test
+    coverage run -m pytest test_assignment.py test_auth.py test_department.py test_employee.py test_employeeskill.py test_manager.py test_project.py test_request.py test_skillset.py
+    coverage html && start htmlcov/index.html
+    ```

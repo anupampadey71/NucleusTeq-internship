@@ -129,17 +129,28 @@ async def delete_assignment(assignmentId: str, current_user: dict = Depends(auth
             assignment_logger.warning("Unauthorized attempt to delete assignment %s by user %s", assignmentId, current_user["username"])
             raise HTTPException(status_code=403, detail="Only admin can delete assignments")
 
-        # Get the employeeId before deleting the assignment
-        cursor.execute("SELECT employeeId FROM assignment WHERE assignmentId = %s", (assignmentId,))
-        employee_id = cursor.fetchone()
+        # Get the employeeId and requestId before deleting the assignment
+        cursor.execute("SELECT employeeId, requestId FROM assignment WHERE assignmentId = %s", (assignmentId,))
+        assignment_data = cursor.fetchone()
 
+        if not assignment_data:
+            raise HTTPException(status_code=404, detail="Assignment not found")
+
+        employee_id, request_id = assignment_data
+
+        # Delete the assignment
         cursor.execute("DELETE FROM assignment WHERE assignmentId = %s;", (assignmentId,))
-        if employee_id:
-            cursor.execute("UPDATE employee SET is_assigned = 0 WHERE employeeId = %s;", (employee_id[0],))
+
+        # Update employee status to 'not assigned'
+        cursor.execute("UPDATE employee SET is_assigned = 0 WHERE employeeId = %s;", (employee_id,))
+
+        # Update the request status to 'Open'
+        cursor.execute("UPDATE request SET status = 'Open' WHERE requestId = %s;", (request_id,))
+
         sql.commit()
         assignment_logger.info("Assignment %s deleted successfully by user %s", assignmentId, current_user["username"])
         return {"message": "Assignment deleted successfully"}
     except Exception as e:
+        sql.rollback()
         assignment_logger.error("Error deleting assignment %s: %s", assignmentId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
-

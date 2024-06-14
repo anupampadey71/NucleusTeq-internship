@@ -68,3 +68,39 @@ def test_delete_skill():
     # Assert successful deletion
     assert response.status_code == 200
     assert response.json() == {"message": "Skill deleted successfully"}
+
+#negative testcases
+def test_negative_create_employee_skill():
+    """Tests creating a new employee skill"""
+    # Define data for the employee skill association
+    data = {
+        "skillId": "SKILL007",
+        "skillName": "javascript"
+    }
+
+    # Make a POST request to create employee skill with admin authentication
+    response = client.post("/skillsets/", json=data, params={"username": "EMP001", "password": "EMP001"})
+
+    # Assert successful creation
+    assert response.status_code == 403
+    assert response.json() == {"detail":"Only admin can create skills"}
+
+
+def test_negative_update_skill_name():
+    """Tests updating a skill name"""
+    # Make a PUT request to update skill name with admin authentication
+    response = client.put("/skillsets/SKILL005", params={"name": "R programming", "username": "EMP001", "password": "EMP001"})
+
+    # Assert successful update
+    assert response.status_code == 403
+    assert response.json() == {"detail":"Only admin can update skill names"}
+
+def test_negative_delete_skill():
+    """Tests deleting a skill"""
+    # Make a DELETE request to delete a skill with admin authentication
+    response = client.delete("/skillsets/SKILL005", params={"username": "EMP001", "password": "EMP001"})
+
+   # Assert successful update
+    assert response.status_code == 403
+    assert response.json() == {"detail":"Only admin can delete skills"}
+

@@ -121,3 +121,5 @@ async def delete_employee_skill(employeeId: str, skillId: str, current_user: dic
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "Employee skill association deleted successfully"}
+
+

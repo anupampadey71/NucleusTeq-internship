@@ -94,3 +94,57 @@ def test_delete_request():
     # Assert successful deletion
     assert response.status_code == 200
     assert response.json() == {"message": "Request deleted successfully"}
+
+#negative testcases
+def test_negative_create_request():
+    """Tests creating a new request"""
+    # Define data for the request
+    data = {
+        "requestId": "REQ007",
+        "projectId": "PROJ002",
+        "skillId": "SKILL004",
+        "status": "Open"
+    }
+
+    # Authenticate to get the token
+    token = get_token("EMP001", "EMP001")
+
+    # Send POST request to create request
+    response = client.post("/request/", 
+                           params={"username": "EMP001", "password": "EMP001"},
+                           json=data,
+                           headers={"Authorization": f"Bearer {token}", "accept": "application/json", "Content-Type": "application/json"})
+
+    # Assert successful creation
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Only managers can create requests for their projects"}
+
+
+def test_negative_update_request():
+    """Tests updating a request"""
+    # Authenticate to get the token
+    token = get_token("MGR002", "MGR002")
+
+    # Send PUT request to update request
+    response = client.put("/request/REQ002", 
+                          params={"status": "Close", "username": "MGR002", "password": "MGR002"},
+                          headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    # Assert successful update
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Only managers can update requests for their projects"}
+
+
+def test_negative_delete_request():
+    """Tests deleting a request"""
+    # Authenticate to get the token
+    token = get_token("MGR002", "MGR002")
+
+    # Send DELETE request to delete the request
+    response = client.delete("/request/REQ002", 
+                             params={"username": "MGR002", "password": "MGR002"},
+                             headers={"Authorization": f"Bearer {token}", "accept": "application/json"})
+
+    # Assert successful deletion
+    assert response.status_code == 403
+    assert response.json() == {"detail": "Only managers can delete requests for their projects"}
