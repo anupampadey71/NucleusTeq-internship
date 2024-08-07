@@ -1,5 +1,5 @@
 # NucleusTeq-internship
-This repsoitry is uploading my training and internship work at nucleus teq
+This repository is uploading my training and internship work at NucleusTeq.
 
 # Employee Management System
 
@@ -10,9 +10,9 @@ This repsoitry is uploading my training and internship work at nucleus teq
   - [Frontend Setup](#frontend-setup)
   - [Backend Setup](#backend-setup)
 - [Database Configuration](#database-configuration)
-- [Database Schema](#database-schema)
 - [Running the Application](#running-the-application)
 - [Testing the Application](#testing-the-application)
+- [Creating Docker Image](#creating-docker-image)
 
 ## Introduction
 This Employee Management System is a full-stack application that includes a React frontend and a FastAPI backend. The system allows for managing employees, projects, and other related tasks.
@@ -22,6 +22,7 @@ This Employee Management System is a full-stack application that includes a Reac
 - Python 3.9
 - Anaconda
 - MySQL database
+- Docker and Docker Compose
 
 ## Setup Instructions
 
@@ -56,59 +57,64 @@ This Employee Management System is a full-stack application that includes a Reac
     ```
 
 ## Database Configuration
-1. Update the `config/databases.py` file with your MySQL database details:
+1. Install MySQL from [here](https://dev.mysql.com/downloads/installer/).
+2. Create a MySQL database named `employee`:
+    ```sql
+    CREATE DATABASE employee;
+    ```
+
+3. Update the `config/databases.py` file with your MySQL database details:
     ```python
     # config/databases.py
 
     host = "your_mysql_host"
     user = "your_mysql_user"
     passwd = "your_mysql_password"
-    database = "your_database_name"
+    database = "employee"
     ```
 
-2. Use the `schema.txt` file to create the necessary tables in your MySQL database.
+4. Use the `employee.sql` file to create the necessary tables in your MySQL database:
+    ```bash
+    mysql -u your_mysql_user -p employee < path_to_employee.sql
+    ```
 
-## Database Schema
-Execute the SQL statements in `schema.txt` to set up the database schema. Here is an example of what `schema.txt` might contain:
-
-```sql
-CREATE TABLE employee (
-    employeeId VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(255),
-    role VARCHAR(255),
-    department VARCHAR(255)
-);
-
-CREATE TABLE project (
-    projectId VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(255),
-    description TEXT,
-    managerId VARCHAR(255),
-    FOREIGN KEY (managerId) REFERENCES employee(employeeId)
-);
-```
-## running the application 
-1. for running frontend
-   ```bash
+## Running the Application
+1. For running the frontend:
+    ```bash
     cd NucleusTeq-internship/Employee Management System/frontend/employee-management-system
     npm start
     ```
-2. for running backend
-   ```bash
+2. For running the backend:
+    ```bash
     cd NucleusTeq-internship/Employee Management System
     uvicorn main:app --reload
     ```
 
-## Testing the application
+## Testing the Application
 1. Ensure the backend server is running.
 2. Navigate to the test directory and run your tests using pytest:
-   ```bash
+    ```bash
     cd NucleusTeq-internship/Employee Management System/Test
     pytest test_nameoftestfile.py
     ```
 3. To generate a test coverage report, run the following command:
-   ```bash
+    ```bash
     cd NucleusTeq-internship/Employee Management System/Test
     coverage run -m pytest test_assignment.py test_auth.py test_department.py test_employee.py test_employeeskill.py test_manager.py test_project.py test_request.py test_skillset.py
     coverage html && start htmlcov/index.html
     ```
+
+## Creating Docker Image
+1. Ensure Docker and Docker Compose are installed.
+2. Navigate to the project directory containing the `docker-compose.yaml` file.
+3. Build and run the Docker containers:
+    ```bash
+    docker-compose up --build
+    ```
+
+Update the MySQL details in the `docker-compose.yaml` file based on your own parameters:
+
+- `DB_USER`: Your MySQL username
+- `DB_PASSWORD`: Your MySQL password
+- `DB_NAME`: Your MySQL database name
+- `MYSQL_ROOT_PASSWORD`: The root password for MySQL
