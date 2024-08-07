@@ -22,7 +22,7 @@ async def main():
 
 # Configure CORS
 origins = [
-    "http://localhost:3000",  # Adjust this to your frontend's origin
+    "http://localhost",  # Adjust this to your frontend's origin
     # Add other allowed origins here
 ]
 

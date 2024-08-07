@@ -1,0 +1,2 @@
+conda create -n ems python==3.9 -y 
+conda activate ems
