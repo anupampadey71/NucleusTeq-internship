@@ -2,7 +2,7 @@ import logging
 import os
 import hashlib
 from fastapi import APIRouter, HTTPException, Query, Depends
-from config.databases import sql, cursor
+from config.databases import get_db_connection
 from model.employee_models import Register, UpdateEmployeeDetails
 from schema.employee_schema import list_serial
 from .auth_route import authenticate_user, Role
@@ -24,7 +24,6 @@ if not employee_logger.handlers:
     employee_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     employee_file_handler.setFormatter(employee_formatter)
     employee_logger.addHandler(employee_file_handler)
-
 
 @employee_router.post("/")
 async def enter_employee_details(info: Register, current_user: dict = Depends(authenticate_user)):
@@ -50,14 +49,14 @@ async def enter_employee_details(info: Register, current_user: dict = Depends(au
     hashed_password = hashlib.sha256(info.employeeId.encode()).hexdigest()
 
     try:
-        # Insert into employee table
-        cursor.execute(employee_sql_query, (info.employeeId, info.email, info.name, info.salary, info.role))
-        # Insert into users table
-        cursor.execute(user_sql_query, (info.employeeId, hashed_password, user_role))
-        sql.commit()
+        with get_db_connection() as (sql, cursor):
+            # Insert into employee table
+            cursor.execute(employee_sql_query, (info.employeeId, info.email, info.name, info.salary, info.role))
+            # Insert into users table
+            cursor.execute(user_sql_query, (info.employeeId, hashed_password, user_role))
+            sql.commit()
         employee_logger.info("Employee %s added successfully by user %s", info.employeeId, current_user["username"])
     except Exception as e:
-        sql.rollback()
         employee_logger.error("Error adding employee %s: %s", info.employeeId, str(e))
         raise HTTPException(status_code=500, detail=f"Error adding employee: {str(e)}")
 
@@ -71,16 +70,16 @@ async def my_info(current_user: dict = Depends(authenticate_user)):
 
     sql_query = "SELECT * FROM employee;"
     try:
-        cursor.execute(sql_query)
-        values = cursor.fetchall()
-        result = list_serial(values)
+        with get_db_connection() as (sql, cursor):
+            cursor.execute(sql_query)
+            values = cursor.fetchall()
+            result = list_serial(values)
         employee_logger.info("Employee info accessed by user %s", current_user["username"])
     except Exception as e:
         employee_logger.error("Error accessing employee info: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
-
+    
     return result
-
 
 @employee_router.put("/{employeeId}")
 async def update_employee_details(employeeId: str, info: UpdateEmployeeDetails, current_user: dict = Depends(authenticate_user)):
@@ -94,16 +93,18 @@ async def update_employee_details(employeeId: str, info: UpdateEmployeeDetails, 
     WHERE employeeId = %s;
     """
     try:
-        cursor.execute(sql_query, (info.email, info.name, info.salary, info.role, employeeId))
-        sql.commit()
+        with get_db_connection() as (sql, cursor):
+            cursor.execute(sql_query, (info.email, info.name, info.salary, info.role, employeeId))
+            if cursor.rowcount == 0:
+                employee_logger.warning("Employee %s not found for update by user %s", employeeId, current_user["username"])
+                raise HTTPException(status_code=404, detail="Employee not found")
+            sql.commit()
         employee_logger.info("Employee %s updated successfully by user %s", employeeId, current_user["username"])
     except Exception as e:
-        sql.rollback()
         employee_logger.error("Error updating employee %s: %s", employeeId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
-
+    
     return {"message": "Record updated successfully"}
-
 
 @employee_router.delete("/")
 async def delete_record(employeeId: str = Query(..., description="Employee ID"), current_user: dict = Depends(authenticate_user)):
@@ -115,15 +116,18 @@ async def delete_record(employeeId: str = Query(..., description="Employee ID"),
     delete_user_sql_query = "DELETE FROM users WHERE username = %s;"
 
     try:
-        # Delete from employee table
-        cursor.execute(delete_employee_sql_query, (employeeId,))
-        # Delete from users table
-        cursor.execute(delete_user_sql_query, (employeeId,))
-        sql.commit()
+        with get_db_connection() as (sql, cursor):
+            # Delete from employee table
+            cursor.execute(delete_employee_sql_query, (employeeId,))
+            # Delete from users table
+            cursor.execute(delete_user_sql_query, (employeeId,))
+            if cursor.rowcount == 0:
+                employee_logger.warning("Employee %s not found for deletion by user %s", employeeId, current_user["username"])
+                raise HTTPException(status_code=404, detail="Employee not found")
+            sql.commit()
         employee_logger.info("Employee %s deleted successfully by user %s", employeeId, current_user["username"])
     except Exception as e:
-        sql.rollback()
         employee_logger.error("Error deleting employee %s: %s", employeeId, str(e))
         raise HTTPException(status_code=500, detail=str(e))
-
+    
     return {"message": "Record deleted successfully"}

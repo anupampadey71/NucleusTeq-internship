@@ -9,4 +9,5 @@ bcrypt
 requests
 cryptography
 coverage
+pytest
 

@@ -1,17 +1,17 @@
 version: '3.8'
+
 services:
   frontend:
     build:
       context: ./frontend/employee-management-system
-    ports:
-      - "80:80"
     depends_on:
       - backend
+    ports:
+      - "80:80"
+
   backend:
     build:
       context: .
-    ports:
-      - "8000:8000"
     depends_on:
       - mysql
     environment:
@@ -19,16 +19,27 @@ services:
       DB_USER: root
       DB_PASSWORD: BhaRas@123
       DB_NAME: employee
+
   mysql:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: BhaRas@123
       MYSQL_DATABASE: employee
     ports:
-      - "3306:3306" # Optional, only if you want to access MySQL from the host
+      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./db_init:/docker-entrypoint-initdb.d # Mount the initialization directory
+      - ./db_init:/docker-entrypoint-initdb.d
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:8000" # Expose port 8080 on the host, proxying to port 80 in the container
+    volumes:
+      - ./conf.d:/etc/nginx/conf.d
+    depends_on:
+      - frontend
+      - backend
 
 volumes:
   mysql_data:

@@ -1,2 +1,2 @@
-conda create -n ems python==3.9 -y 
 conda activate ems
+docker-compose up --scale backend=2 --build
