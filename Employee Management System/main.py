@@ -8,7 +8,7 @@ from route.project_route import project_router
 from route.request_route import request_router
 from route.assignment_route import assignment_router
 from route.auth_route import auth_router  # Import the auth router
-from config.databases import sql, cursor
+
 
 from fastapi.middleware.cors import CORSMiddleware
 
