@@ -1,4 +1,4 @@
-# NucleusTeq-internship jan to july 2024
+# NucleusTeq-internship
 This repsoitry is uploading my training and internship work at nucleus teq
 
 # Employee Management System
